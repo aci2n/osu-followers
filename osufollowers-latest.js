@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name osu! followers
-// @version 0.11
+// @version 0.13
 // @namespace https://github.com/alvarocalace/osufollowers
 // @description Adds link to osu! profile on facebook comments
 // @require http://code.jquery.com/jquery-latest.js
@@ -13,6 +13,10 @@
 var username;
 var URL_USER = 'https://osu.ppy.sh/u/';
 var URL_BEATMAP = 'https://osu.ppy.sh/b/';
+var URL_BASE = 'http://itoon-osufollower.rhcloud.com';
+var URL_API = '/api/FollowedPlayersRecentTopScores';
+var URL_ADD = '/AddFollowedPlayer';
+var URL_DELETE = '/DeleteFollowedPlayer';
 var index = 0;
 var updating = 0;
 
@@ -22,7 +26,9 @@ $(window).load(
 		username = getCookie('last_login');
 		if (username && ((URL_USER + username).match(document.URL + '*') || $('.profile-username').first().text().trim() === username)) {
 		   init();
-		}
+        } else {
+            console.log('i skipped');
+        }
 	}
 );
 
@@ -57,29 +63,30 @@ function init() {
 		var player = $(this).val();
 		if (!updating && event.which === 13 && player) {
 			$(this).val('');
-			var url = 'http://itoon-osufollower.rhcloud.com/AddFollowedPlayer?'
-			+ 'username=' + encodeURIComponent(username)
-			+ '&player=' + encodeURIComponent(player);
-			processUpdate(url, ' player ' + player + ' added');
+			processAddOrDelete(URL_ADD, username, player);
 		}
 	});
 }
 
-function processUpdate(url, message) {
-	createGetRequest(url, function(){
+function processAddOrDelete(action, username, player) {
+	var url = URL_BASE + action + '?username=' + encodeURIComponent(username) + '&player=' + encodeURIComponent(player);
+	createGetRequest(url, function(response){
+		console.log(response.status);
 		$('#messageAdded').remove();
-		var span = $('<span>').attr('id', 'messageAdded').css('color', '#424242'). text(message).fadeIn(400).delay(5000).fadeOut(400);
+		var span = $('<span>').attr('id', 'messageAdded').css('padding-left', '10px').css('color', '#848484'). text(response.responseText).fadeIn(400).delay(5000).fadeOut(400);
 		$('#inputPlayer').after(span);
-		$('#followedTable').empty();
-		index = 0;
-		appendBatch();
-		goToByScroll('followedPlayersTitle');
+		if (response.status === 200) {
+			$('#followedTable').empty();
+			index = 0;
+			appendBatch();
+		}
+		//goToByScroll('followedPlayersTitle');
 	});
 }
 
 function appendBatch() {
 	updating = 1;
-	var url = 'http://itoon-osufollower.rhcloud.com/api/FollowedPlayersRecentTopScores?username=' + encodeURIComponent(username) + '&startingIndex=' + encodeURIComponent(index);
+	var url = URL_BASE + URL_API + '?username=' + encodeURIComponent(username) + '&startingIndex=' + encodeURIComponent(index);
 	console.log('im requesting ' + url);
 	$('#followedLoadingIcon').show();
 	createGetRequest(url, function(response){
@@ -97,15 +104,12 @@ function appendBatch() {
 function appendFollowedRow(table, d) {
 	var deleteButton = $('<img>').attr('src','https://cdn2.iconfinder.com/data/icons/windows-8-metro-style/128/delete.png').css('width', '10px').css('height', '10px').css('cursor', 'pointer').on('click', function() {
 		if (!updating && confirm('Are you sure you want to stop following ' + d.username + '?')) {
-			var url = 'http://itoon-osufollower.rhcloud.com/DeleteFollowedPlayer?'
-			+ 'username=' + encodeURIComponent(username)
-			+ '&player=' + encodeURIComponent(d.username);
-			processUpdate(url,  ' player ' + d.username + ' deleted');
+			processAddOrDelete(URL_DELETE, username, d.username);
 		}
 	});
 	
     table.append($('<tr>')
-		 .append($('<td>').css('width', '17%')
+		 .append($('<td>').css('width', '20%')
 			.append($('<time>').attr('class', 'timeago').attr('datetime', d.date).attr('title', d.date).text(d.date))
 		)
 		.append($('<td>')
