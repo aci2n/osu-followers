@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name osu! followers
-// @version 0.1
+// @version 0.11
 // @namespace https://github.com/alvarocalace/osufollowers
 // @description Adds link to osu! profile on facebook comments
 // @require http://code.jquery.com/jquery-latest.js
@@ -20,7 +20,7 @@ $(window).load(
 	function main(){
 		console.log('i started');
 		username = getCookie('last_login');
-		if (username && (URL_USER + username).match(document.URL + '*')) {
+		if (username && ((URL_USER + username).match(document.URL + '*') || $('.profile-username').first().text().trim() === username)) {
 		   init();
 		}
 	}
