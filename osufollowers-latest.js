@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name osu! followers
-// @version 0.13
+// @version 0.14
 // @namespace https://github.com/alvarocalace/osufollowers
 // @description Adds link to osu! profile on facebook comments
 // @require http://code.jquery.com/jquery-latest.js
@@ -19,15 +19,16 @@ var URL_ADD = '/AddFollowedPlayer';
 var URL_DELETE = '/DeleteFollowedPlayer';
 var index = 0;
 var updating = 0;
+var pollingRate = 10;
+var defaultTimeout = 2000;
 
 $(window).load(
 	function main(){
 		console.log('i started');
 		username = getCookie('last_login');
-		if (username && ((URL_USER + username).match(document.URL + '*') || $('.profile-username').first().text().trim() === username)) {
-		   init();
-        } else {
-            console.log('i skipped');
+		var profileUsername = $('.profile-username');
+		if (username && ((URL_USER + username).match(document.URL + '*') || (profileUsername && profileUsername.first().text().trim() === username))) {
+		   waitForSelector('#full', init, defaultTimeout);
         }
 	}
 );
@@ -80,7 +81,6 @@ function processAddOrDelete(action, username, player) {
 			index = 0;
 			appendBatch();
 		}
-		//goToByScroll('followedPlayersTitle');
 	});
 }
 
@@ -103,7 +103,8 @@ function appendBatch() {
 
 function appendFollowedRow(table, d) {
 	var deleteButton = $('<img>').attr('src','https://cdn2.iconfinder.com/data/icons/windows-8-metro-style/128/delete.png').css('width', '10px').css('height', '10px').css('cursor', 'pointer').on('click', function() {
-		if (!updating && confirm('Are you sure you want to stop following ' + d.username + '?')) {
+        var conf = confirm('Are you sure you want to stop following ' + d.username + '?');
+		if (!updating && conf) {
 			processAddOrDelete(URL_DELETE, username, d.username);
 		}
 	});
@@ -146,6 +147,17 @@ function modsToString(mods) {
 	return str.substring(0, str.length - 2);
 }
 
-function goToByScroll(id){
-    $('html,body').animate({scrollTop: $("#"+id).offset().top},'slow');
+function waitForSelector(selector, callback, timeout){
+	var waited = 0;
+    var interval = setInterval(function() {
+        if ($(selector).length) {
+            clearInterval(interval);
+			callback();
+        } else {
+			waited += pollingRate;
+			if (waited >= timeout) {
+				clearInterval();
+			}
+		}
+    }, pollingRate);
 }
