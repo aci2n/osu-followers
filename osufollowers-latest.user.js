@@ -1,9 +1,9 @@
 // ==UserScript==
 // @name osu! followers
-// @version 0.15
+// @version 0.16
 // @author Alvaro Daniel Calace
 // @namespace https://github.com/alvarocalace/osufollowers
-// @description Adds link to osu! profile on facebook comments
+// @description Adds a new followed players section in your osu! profile
 // @require http://code.jquery.com/jquery-latest.js
 // @include https://osu.ppy.sh/u/*
 // @copyright 2015, Alvaro Daniel Calace
