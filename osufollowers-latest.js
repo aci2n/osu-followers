@@ -6,8 +6,8 @@
 // @require http://code.jquery.com/jquery-latest.js
 // @include https://osu.ppy.sh/u/*
 // @copyright 2015, Alvaro Daniel Calace
+// @downloadURL https://raw.githubusercontent.com/alvarocalace/osufollowers/master/osufollowers-latest.js
 // @grant GM_xmlhttpRequest
-
 // ==/UserScript==
 
 var username;
