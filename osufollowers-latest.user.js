@@ -1,10 +1,11 @@
 // ==UserScript==
 // @name osu! followers
-// @version 0.17
+// @version 0.18
 // @author Alvaro Daniel Calace
 // @namespace https://github.com/alvarocalace/osufollowers
 // @description Adds a new followed players section in your osu! profile
 // @require http://code.jquery.com/jquery-latest.js
+// @require http://timeago.yarp.com/jquery.timeago.js
 // @include https://osu.ppy.sh/u/*
 // @copyright 2015, Alvaro Daniel Calace
 // @downloadURL https://raw.githubusercontent.com/alvarocalace/osufollowers/master/osufollowers-latest.user.js
@@ -109,10 +110,9 @@ function appendFollowedRow(table, d) {
 			processAddOrDelete(URL_DELETE, username, d.username);
 		}
 	});
-	
-    table.append($('<tr>')
+    table.append($('<tr>').slideDown('slow')
 		 .append($('<td>').css('width', '20%')
-			.append($('<time>').attr('class', 'timeago').attr('datetime', d.date).attr('title', d.date).text(d.date))
+			.append($('<time>').attr('class', 'timeago').attr('datetime', d.date).attr('title', d.date).text($.timeago(d.date)))
 		)
 		.append($('<td>')
 			.append($('<div>').attr('class', 'event epic1')
