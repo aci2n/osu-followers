@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name osu! followers
-// @version 0.19
+// @version 0.20
 // @author Alvaro Daniel Calace
 // @namespace https://github.com/alvarocalace/osufollowers
 // @description Adds a new followed players section in your osu! profile
@@ -76,7 +76,7 @@ function processAddOrDelete(action, username, player) {
     createGetRequest(url, function(response){
         console.log(response.status);
         $('#messageAdded').remove();
-        var span = $('<span>').attr('id', 'messageAdded').css('padding-left', '10px').css('color', '#848484'). text(response.responseText).fadeIn(400).delay(5000).fadeOut(400);
+        var span = $('<span>').attr('id', 'messageAdded').css('padding-left', '10px').css('color', '#848484').text(response.responseText).fadeIn(400).delay(5000).fadeOut(400);
         $('#inputPlayer').after(span);
         if (response.status === 200) {
             $('#followedTable').empty();
@@ -110,7 +110,7 @@ function appendFollowedRow(table, d) {
             processAddOrDelete(URL_DELETE, username, d.username);
         }
     });
-    table.append($('<tr>').slideDown('slow')
+    table.append($('<tr>')
                  .append($('<td>').css('width', '20%')
                          .append($('<time>').attr('class', 'timeago').attr('datetime', d.date).attr('title', formatDateForTitle(d.date)).text($.timeago(d.date)))
                         )
@@ -164,7 +164,10 @@ function waitForSelector(selector, callback, timeout){
 }
 
 function formatDateForTitle(str) {
-    var d = new Date(str);    
+    var d = new Date(str);
+    // convert to UTC
+    d = new Date(d.getTime() + (d.getTimezoneOffset() * 60000));
+    
     var yyyy = d.getFullYear();
     var mm = d.getMonth() + 1;
     var dd = d.getDate();
