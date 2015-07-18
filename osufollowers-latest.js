@@ -10,6 +10,7 @@
 // @grant GM_xmlhttpRequest
 // ==/UserScript==
 
+//test
 var username;
 var URL_USER = 'https://osu.ppy.sh/u/';
 var URL_BEATMAP = 'https://osu.ppy.sh/b/';
