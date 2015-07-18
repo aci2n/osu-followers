@@ -1,6 +1,7 @@
 // ==UserScript==
 // @name osu! followers
-// @version 0.14
+// @version 0.15
+// @author Alvaro Daniel Calace
 // @namespace https://github.com/alvarocalace/osufollowers
 // @description Adds link to osu! profile on facebook comments
 // @require http://code.jquery.com/jquery-latest.js
