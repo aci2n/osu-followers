@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name osu! followers
-// @version 0.22
+// @version 0.23
 // @author Alvaro Daniel Calace
 // @namespace https://github.com/alvarocalace/osufollowers
 // @description Adds a new followed players section in your osu! profile
@@ -75,7 +75,7 @@ function init() {
         var player = $(this).val();
         if (!updating && event.which === 13 && player) {
             $(this).val('');
-            processAddFollowedPlayer(username, player);
+            processAdd(username, player);
         }
     });	
 		
@@ -126,13 +126,13 @@ function initSettingsTable() {
 }
 
 function appendToSettingsTable(d) {
-	var rowClass = $('#settingsTable tr').length % 2 === 1 ? 'row2p' : 'row1p';
+	var rowClass = $('#settingsTable > tbody > tr').length % 2 === 1 ? 'row2p' : 'row1p';
 
 	var deleteButton = $('<a>').attr('href', '#').on('click', function(event) {
 		event.preventDefault();
 		var conf = confirm('Are you sure you want to stop following ' + d.username + '?');
 		if (!updating && conf) {
-			processDelete(username, d.username, d.rank);
+			processDelete(username, d.username);
 			$(this).closest('tr').remove();
 			$('#settingsTable > tbody  > tr').each(function() {
 				var rowClass = $(this).index() % 2 === 1 ? 'row2p' : 'row1p'
@@ -165,33 +165,37 @@ function appendToSettingsTable(d) {
 }
 
 //AJAX
-function processDelete(username, player, isValid) {
+function processDelete(username, player) {
+	updating = 1;
     var url = URL_BASE + URL_DELETE; 
 	var params = 'username=' + encodeURIComponent(username) + '&player=' + encodeURIComponent(player);
     createPostRequest(url, params, function(response){
         if (response.status === 200) {
-			showMessage('player ' + player + ' successfully deleted');
-			if (isValid) {
-				refreshTable();
-			}
-        }
+			showMessage('you are not following ' + player + ' anymore');
+			refreshTable();
+        } else {
+			showMessage('a server error has occurred, please try again later');
+		}
+		updating = 0;
     });
 }
 
-function processAddFollowedPlayer(username, player) {
+function processAdd(username, player) {
+	updating = 1;
     var url = URL_BASE + URL_ADD; 
 	var params = 'username=' + encodeURIComponent(username) + '&player=' + encodeURIComponent(player);
     createPostRequest(url, params, function(response){
         if (response.status === 200) {
-			showMessage('player ' + player + ' successfully added');
 			var data = $.parseJSON(response.responseText);
 			appendToSettingsTable(data);
-			if (data.rank) {
-				refreshTable();
-			}
+			showMessage('you are now following ' + data.username);
+			refreshTable();
         } else if (response.status = 422){
-			showMessage('you are already following ' + player);
+			showMessage(response.responseText);
+		} else {
+			showMessage('a server error has occurred, please try again later');
 		}
+		updating = 0;
     });
 }
 
