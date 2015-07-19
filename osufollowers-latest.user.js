@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name osu! followers
-// @version 0.20
+// @version 0.21
 // @author Alvaro Daniel Calace
 // @namespace https://github.com/alvarocalace/osufollowers
 // @description Adds a new followed players section in your osu! profile
@@ -26,7 +26,6 @@ var defaultTimeout = 2000;
 
 $(window).load(
     function main(){
-        console.log('i started');
         username = getCookie('last_login');
         var profileUsername = $('.profile-username');
         if (username && ((URL_USER + username).match(document.URL + '*') || (profileUsername && profileUsername.first().text().trim() === username))) {
@@ -36,13 +35,11 @@ $(window).load(
 );
 
 function init() {
-    console.log('i loaded');
     var followedDiv = $('<div>');
     $('#full').after(followedDiv);    
     followedDiv.append('<div id="followedPlayersTitle"class="profileStatHeader">Followed Players</div>');
 
     var followedTable = $('<table>').attr('id', 'followedTable');
-    console.log(followedTable);
     followedDiv.append(followedTable);
 
     appendBatch();
@@ -53,53 +50,21 @@ function init() {
             appendBatch();
         }
     });
-    followedDiv.append(showMeMore);
+    followedDiv.append($('<div>').append(showMeMore));
 
-    var loadingIcon = $('<img>').attr('id', 'followedLoadingIcon').attr('src', 'http://www.arabianbusiness.com/skins/ab.main/gfx/loading_spinner.gif').css('height', '20px').css('width', '20px');
+    var loadingIcon = $('<img>').attr('id', 'followedLoadingIcon').attr('src', 'http://www.ajaxload.info/images/exemples/30.gif').css('height', '11px').css('width', '11px');
     showMeMore.after(loadingIcon);
 
-    followedDiv.append('<br><br>');
+    followedDiv.append('<br>');
 
     var inputPlayer = $('<input>').attr('placeholder', 'follow a new player!').attr('id', 'inputPlayer');
-    followedDiv.append(inputPlayer);
+    followedDiv.append($('<div>').css('padding-left', '5px').append(inputPlayer));
     inputPlayer.on('keydown', function(event) {
         var player = $(this).val();
         if (!updating && event.which === 13 && player) {
             $(this).val('');
             processAddOrDelete(URL_ADD, username, player);
         }
-    });
-}
-
-function processAddOrDelete(action, username, player) {
-    var url = URL_BASE + action + '?username=' + encodeURIComponent(username) + '&player=' + encodeURIComponent(player);
-    createGetRequest(url, function(response){
-        console.log(response.status);
-        $('#messageAdded').remove();
-        var span = $('<span>').attr('id', 'messageAdded').css('padding-left', '10px').css('color', '#848484').text(response.responseText).fadeIn(400).delay(5000).fadeOut(400);
-        $('#inputPlayer').after(span);
-        if (response.status === 200) {
-            $('#followedTable').empty();
-            index = 0;
-            appendBatch();
-        }
-    });
-}
-
-function appendBatch() {
-    updating = 1;
-    var url = URL_BASE + URL_API + '?username=' + encodeURIComponent(username) + '&startingIndex=' + encodeURIComponent(index);
-    console.log('im requesting ' + url);
-    $('#followedLoadingIcon').show();
-    createGetRequest(url, function(response){
-        $('#followedLoadingIcon').hide();
-        var data = $.parseJSON(response.responseText);
-        for (var i = 0; i < data.length; i++) {
-            console.log('appending');
-            appendFollowedRow($('#followedTable'), data[i]);
-            index++;
-        }
-        updating = 0;
     });
 }
 
@@ -128,16 +93,62 @@ function appendFollowedRow(table, d) {
                 );
 }
 
+//AJAX
+function processAddOrDelete(action, username, player) {
+    var url = URL_BASE + action; 
+	var params = 'username=' + encodeURIComponent(username) + '&player=' + encodeURIComponent(player);
+    createPostRequest(url, params, function(response){
+        $('#messageAdded').remove();
+        var span = $('<span>').attr('id', 'messageAdded').css('padding-left', '10px').css('color', '#848484').text(response.responseText).fadeIn(400).delay(5000).fadeOut(400);
+        $('#inputPlayer').after(span);
+        if (response.status === 200) {
+            $('#followedTable').empty();
+            index = 0;
+            appendBatch();
+        }
+    });
+}
+
+function appendBatch() {
+    updating = 1;
+    var url = URL_BASE + URL_API + '?username=' + encodeURIComponent(username) + '&startingIndex=' + encodeURIComponent(index);
+    $('#followedLoadingIcon').show();
+    createGetRequest(url, function(response){
+        $('#followedLoadingIcon').hide();
+        var data = $.parseJSON(response.responseText);
+        for (var i = 0; i < data.length; i++) {
+            appendFollowedRow($('#followedTable'), data[i]);
+            index++;
+        }
+        updating = 0;
+    });
+}
+
 function createGetRequest(url, callback) {
     GM_xmlhttpRequest({
         method: 'GET',
         url: url,
         onload: function(response) {
-            callback(response);
+			callback(response);
         }
     });
 }
 
+function createPostRequest(url, params, callback) {
+    GM_xmlhttpRequest({
+		method: 'POST',
+		url: url,
+		data: params,
+		headers: {
+			'Content-Type': 'application/x-www-form-urlencoded'
+		},
+		onload: function(response) {
+			callback(response);
+		}
+	});
+}
+
+//UTILITIES
 function getCookie(k){return(document.cookie.match('(^|; )'+k+'=([^;]*)')||0)[2];}
 
 function modsToString(mods) {
