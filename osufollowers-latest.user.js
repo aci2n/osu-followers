@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name osu! followers
-// @version 0.23
+// @version 0.24
 // @author Alvaro Daniel Calace
 // @namespace https://github.com/alvarocalace/osufollowers
 // @description Adds a new followed players section in your osu! profile
@@ -21,7 +21,7 @@ var URL_API_PLAYERS = '/api/GetFollowedPlayers';
 var URL_ADD = '/AddFollowedPlayer';
 var URL_DELETE = '/DeleteFollowedPlayer';
 var index = 0;
-var updating = 0;
+var lock = 0;
 var pollingRate = 10;
 var defaultTimeout = 2000;
 
@@ -45,7 +45,7 @@ function init() {
 
     var showMeMore = $('<a>').attr('href', '#').text("Show me more...").on('click', function(event){
         event.preventDefault();
-        if (!updating) {
+        if (!isLocked()) {
             appendBatch();
         }
     });
@@ -53,8 +53,7 @@ function init() {
 	
 	appendBatch();
 
-    var loadingIcon = $('<img>').attr('id', 'followedLoadingIcon').attr('src', 'http://www.ajaxload.info/images/exemples/30.gif').css('height', '11px').css('width', '11px');
-    showMeMore.after(loadingIcon);
+    showMeMore.after($('<img>').attr('id', 'followedLoadingIcon').attr('src', 'http://www.ajaxload.info/images/exemples/30.gif').css('height', '11px').css('width', '11px'));
 
     followedDiv.append('<br>');
 
@@ -73,7 +72,7 @@ function init() {
     followedDiv.append(divInput.append(inputPlayer));
     inputPlayer.on('keydown', function(event) {
         var player = $(this).val();
-        if (!updating && event.which === 13 && player) {
+        if (!isLocked() && event.which === 13 && player) {
             $(this).val('');
             processAdd(username, player);
         }
@@ -93,6 +92,7 @@ function init() {
 		)
 	);
 	divSettings.append(settingsTable);
+	divSettings.append($('<img>').attr('id', 'settingsTableLoadingIcon').attr('src', 'http://www.ajaxload.info/images/exemples/30.gif').css('height', '11px').css('width', '11px'));
 	initSettingsTable();
 }
 
@@ -115,6 +115,7 @@ function appendFollowedRow(d) {
 }
 
 function initSettingsTable() {
+	closeLock();
 	var data = [];
 	var url = URL_BASE + URL_API_PLAYERS + '?username=' + encodeURIComponent(username);
 	createGetRequest(url, function(response) {
@@ -122,6 +123,8 @@ function initSettingsTable() {
 		for (var i = 0; i < data.length; i++) {
 			appendToSettingsTable(data[i]);
 		}
+		$('#settingsTableLoadingIcon').hide();
+		openLock();
 	});
 }
 
@@ -131,7 +134,7 @@ function appendToSettingsTable(d) {
 	var deleteButton = $('<a>').attr('href', '#').on('click', function(event) {
 		event.preventDefault();
 		var conf = confirm('Are you sure you want to stop following ' + d.username + '?');
-		if (!updating && conf) {
+		if (!isLocked() && conf) {
 			processDelete(username, d.username);
 			$(this).closest('tr').remove();
 			$('#settingsTable > tbody  > tr').each(function() {
@@ -166,7 +169,7 @@ function appendToSettingsTable(d) {
 
 //AJAX
 function processDelete(username, player) {
-	updating = 1;
+	closeLock();
     var url = URL_BASE + URL_DELETE; 
 	var params = 'username=' + encodeURIComponent(username) + '&player=' + encodeURIComponent(player);
     createPostRequest(url, params, function(response){
@@ -176,12 +179,12 @@ function processDelete(username, player) {
         } else {
 			showMessage('a server error has occurred, please try again later');
 		}
-		updating = 0;
+		openLock();
     });
 }
 
 function processAdd(username, player) {
-	updating = 1;
+	closeLock();
     var url = URL_BASE + URL_ADD; 
 	var params = 'username=' + encodeURIComponent(username) + '&player=' + encodeURIComponent(player);
     createPostRequest(url, params, function(response){
@@ -195,12 +198,12 @@ function processAdd(username, player) {
 		} else {
 			showMessage('a server error has occurred, please try again later');
 		}
-		updating = 0;
+		openLock();
     });
 }
 
 function appendBatch() {
-    updating = 1;
+    closeLock();
     var url = URL_BASE + URL_API_SCORES + '?username=' + encodeURIComponent(username) + '&startingIndex=' + encodeURIComponent(index);
     $('#followedLoadingIcon').show();
     createGetRequest(url, function(response){
@@ -210,7 +213,7 @@ function appendBatch() {
             appendFollowedRow(data[i]);
             index++;
         }
-        updating = 0;
+        openLock();
     });
 }
 
@@ -300,4 +303,17 @@ function commaSeparate(val){
         val = val.toString().replace(/(\d+)(\d{3})/, '$1'+','+'$2');
     }
     return val;
+}
+
+//SYNC LOCK
+function isLocked() {
+	return lock;
+}
+
+function closeLock() {
+	lock--;
+}
+
+function openLock() {
+	lock++;
 }
