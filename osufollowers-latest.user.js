@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name osu! followers
-// @version 0.21
+// @version 0.22
 // @author Alvaro Daniel Calace
 // @namespace https://github.com/alvarocalace/osufollowers
 // @description Adds a new followed players section in your osu! profile
@@ -16,7 +16,8 @@ var username;
 var URL_USER = 'https://osu.ppy.sh/u/';
 var URL_BEATMAP = 'https://osu.ppy.sh/b/';
 var URL_BASE = 'http://itoon-osufollower.rhcloud.com';
-var URL_API = '/api/FollowedPlayersRecentTopScores';
+var URL_API_SCORES = '/api/FollowedPlayersRecentTopScores';
+var URL_API_PLAYERS = '/api/GetFollowedPlayers';
 var URL_ADD = '/AddFollowedPlayer';
 var URL_DELETE = '/DeleteFollowedPlayer';
 var index = 0;
@@ -42,8 +43,6 @@ function init() {
     var followedTable = $('<table>').attr('id', 'followedTable');
     followedDiv.append(followedTable);
 
-    appendBatch();
-
     var showMeMore = $('<a>').attr('href', '#').text("Show me more...").on('click', function(event){
         event.preventDefault();
         if (!updating) {
@@ -51,77 +50,176 @@ function init() {
         }
     });
     followedDiv.append($('<div>').append(showMeMore));
+	
+	appendBatch();
 
     var loadingIcon = $('<img>').attr('id', 'followedLoadingIcon').attr('src', 'http://www.ajaxload.info/images/exemples/30.gif').css('height', '11px').css('width', '11px');
     showMeMore.after(loadingIcon);
 
     followedDiv.append('<br>');
 
+	var divInput = $('<div>');
+	
+	var settingsLink = $('<a>').attr('href', '#').on('click', function(event) {
+		event.preventDefault();
+		var img = $(this).children(":first");
+		img.css('-webkit-transform') === 'none' ? img.css('-webkit-transform', 'rotate(-90deg)') : img.css('-webkit-transform', '');
+		var divSettings = $('#divSettings');
+		divSettings.css('display') === 'none' ? divSettings.show() : divSettings.hide();
+	}).append($('<img>').attr('src','https://upload.wikimedia.org/wikipedia/commons/f/f7/Arrow-down-navmenu.png').css('-webkit-transform', 'rotate(-90deg)').css('padding-right', '3px').css('height', '11px').css('width', '11px'));
+	divInput.append(settingsLink);
+	
     var inputPlayer = $('<input>').attr('placeholder', 'follow a new player!').attr('id', 'inputPlayer');
-    followedDiv.append($('<div>').css('padding-left', '5px').append(inputPlayer));
+    followedDiv.append(divInput.append(inputPlayer));
     inputPlayer.on('keydown', function(event) {
         var player = $(this).val();
         if (!updating && event.which === 13 && player) {
             $(this).val('');
-            processAddOrDelete(URL_ADD, username, player);
+            processAddFollowedPlayer(username, player);
         }
-    });
+    });	
+		
+	var divSettings = $('<div>').attr('id', 'divSettings').css('padding-top', '5px').hide();
+	followedDiv.append(divSettings);
+	var settingsTable = $('<table>').attr('id', 'settingsTable').attr('class', 'beatmapListing').attr('cellspacing', '0');
+	settingsTable.append($('<thead>')
+		.append($('<tr>')
+			.append($('<th>').text('Rank'))
+			.append($('<th>').text('Player'))
+			.append($('<th>').text('Accuracy'))
+			.append($('<th>').text('Playcount'))
+			.append($('<th>').text('Performance'))
+			.append($('<th>').text('Delete'))
+		)
+	);
+	divSettings.append(settingsTable);
+	initSettingsTable();
 }
 
-function appendFollowedRow(table, d) {
-    var deleteButton = $('<img>').attr('src','https://cdn2.iconfinder.com/data/icons/windows-8-metro-style/128/delete.png').css('width', '10px').css('height', '10px').css('cursor', 'pointer').on('click', function() {
-        var conf = confirm('Are you sure you want to stop following ' + d.username + '?');
-        if (!updating && conf) {
-            processAddOrDelete(URL_DELETE, username, d.username);
-        }
-    });
-    table.append($('<tr>')
-                 .append($('<td>').css('width', '20%')
-                         .append($('<time>').attr('class', 'timeago').attr('datetime', d.date).attr('title', formatDateForTitle(d.date)).text($.timeago(d.date)))
-                        )
-                 .append($('<td>')
-                         .append($('<div>').attr('class', 'event epic1')
-                                 .append($('<img>').attr('src', '/images/' + d.rank +'_small.png'))
-                                 .append(' ')
-                                 .append($('<a>').attr('href', URL_USER + d.username).attr('target', '_blank').css('font-weight', 'bold').text(d.username)) 
-                                 .append(' got ' + d.pp + ' pp on ')
-                                 .append($('<a>').attr('href',URL_BEATMAP + d.beatmapId).attr('target', '_blank').text(d.artist + ' - ' + d.title + ' [' + d.version + '] '))
-                                 .append (' (' + modsToString(d.mods) + ') ')
-                                 .append(deleteButton)
-                                )
-                        )
-                );
+function appendFollowedRow(d) {
+    $('#followedTable').append($('<tr>')
+		 .append($('<td>').css('width', '20%')
+				 .append($('<time>').attr('class', 'timeago').attr('datetime', d.date).attr('title', formatDateForTitle(d.date)).text($.timeago(d.date)))
+				)
+		 .append($('<td>')
+				 .append($('<div>').attr('class', 'event epic1')
+						 .append($('<img>').attr('src', '/images/' + d.rank +'_small.png'))
+						 .append(' ')
+						 .append($('<a>').attr('href', URL_USER + d.username).attr('target', '_blank').css('font-weight', 'bold').text(d.username)) 
+						 .append(' got ' + d.pp + ' pp on ')
+						 .append($('<a>').attr('href',URL_BEATMAP + d.beatmapId).attr('target', '_blank').text(d.artist + ' - ' + d.title + ' [' + d.version + '] '))
+						 .append (' (' + modsToString(d.mods) + ') ')
+						)
+				)
+		);
+}
+
+function initSettingsTable() {
+	var data = [];
+	var url = URL_BASE + URL_API_PLAYERS + '?username=' + encodeURIComponent(username);
+	createGetRequest(url, function(response) {
+		data = $.parseJSON(response.responseText);
+		for (var i = 0; i < data.length; i++) {
+			appendToSettingsTable(data[i]);
+		}
+	});
+}
+
+function appendToSettingsTable(d) {
+	var rowClass = $('#settingsTable tr').length % 2 === 1 ? 'row2p' : 'row1p';
+
+	var deleteButton = $('<a>').attr('href', '#').on('click', function(event) {
+		event.preventDefault();
+		var conf = confirm('Are you sure you want to stop following ' + d.username + '?');
+		if (!updating && conf) {
+			processDelete(username, d.username, d.rank);
+			$(this).closest('tr').remove();
+			$('#settingsTable > tbody  > tr').each(function() {
+				var rowClass = $(this).index() % 2 === 1 ? 'row2p' : 'row1p'
+				$(this).attr('class', rowClass);
+			});
+		}
+	}).append($('<img>').attr('src','https://cdn2.iconfinder.com/data/icons/windows-8-metro-style/128/delete.png').css('width', '10px').css('height', '10px'));
+
+	var rank = d.rank ? (d.rank === '0' ? 'unranked' :'#' + d.rank) : '';
+	var country = d.country ? d.country.toLowerCase() : 'mw';
+	var acc = d.accuracy ? d.accuracy + '%' : '';
+	var pp = d.pp ? (d.pp === '0' ? 'unavailable' : d.pp + 'pp') : '';
+	var playcount = d.playcount ? commaSeparate(d.playcount) : '';
+	
+	$('#settingsTable').append(
+		$('<tr>').attr('class', rowClass)//.attr('onclick','document.location="/u/' + d.username + '"')
+			.append($('<td>').css('font-weight', 'bold').text(rank))
+			.append($('<td>')
+				.append($('<img>').attr('src', '//s.ppy.sh/images/flags/' + country + '.gif'))
+				.append(' ')
+				.append($('<a>').attr('target', '_blank').attr('href', URL_USER + d.username).text(d.username))
+			)
+			.append($('<td>').text(acc))
+			.append($('<td>').text(playcount))
+			.append($('<td>').css('font-weight', 'bold').text(pp))
+			.append($('<td>').css('text-align', 'center')
+				.append(deleteButton)
+			)
+		);
 }
 
 //AJAX
-function processAddOrDelete(action, username, player) {
-    var url = URL_BASE + action; 
+function processDelete(username, player, isValid) {
+    var url = URL_BASE + URL_DELETE; 
 	var params = 'username=' + encodeURIComponent(username) + '&player=' + encodeURIComponent(player);
     createPostRequest(url, params, function(response){
-        $('#messageAdded').remove();
-        var span = $('<span>').attr('id', 'messageAdded').css('padding-left', '10px').css('color', '#848484').text(response.responseText).fadeIn(400).delay(5000).fadeOut(400);
-        $('#inputPlayer').after(span);
         if (response.status === 200) {
-            $('#followedTable').empty();
-            index = 0;
-            appendBatch();
+			showMessage('player ' + player + ' successfully deleted');
+			if (isValid) {
+				refreshTable();
+			}
         }
+    });
+}
+
+function processAddFollowedPlayer(username, player) {
+    var url = URL_BASE + URL_ADD; 
+	var params = 'username=' + encodeURIComponent(username) + '&player=' + encodeURIComponent(player);
+    createPostRequest(url, params, function(response){
+        if (response.status === 200) {
+			showMessage('player ' + player + ' successfully added');
+			var data = $.parseJSON(response.responseText);
+			appendToSettingsTable(data);
+			if (data.rank) {
+				refreshTable();
+			}
+        } else if (response.status = 422){
+			showMessage('you are already following ' + player);
+		}
     });
 }
 
 function appendBatch() {
     updating = 1;
-    var url = URL_BASE + URL_API + '?username=' + encodeURIComponent(username) + '&startingIndex=' + encodeURIComponent(index);
+    var url = URL_BASE + URL_API_SCORES + '?username=' + encodeURIComponent(username) + '&startingIndex=' + encodeURIComponent(index);
     $('#followedLoadingIcon').show();
     createGetRequest(url, function(response){
         $('#followedLoadingIcon').hide();
         var data = $.parseJSON(response.responseText);
         for (var i = 0; i < data.length; i++) {
-            appendFollowedRow($('#followedTable'), data[i]);
+            appendFollowedRow(data[i]);
             index++;
         }
         updating = 0;
     });
+}
+
+function showMessage(message) {
+	$('#messageAdded').remove();
+	var span = $('<span>').attr('id', 'messageAdded').css('padding-left', '10px').css('color', '#848484').text(message).fadeIn(400).delay(5000).fadeOut(400);
+	$('#inputPlayer').after(span);
+}
+
+function refreshTable() {
+	$('#followedTable').empty();
+	index = 0;
+	appendBatch();
 }
 
 function createGetRequest(url, callback) {
@@ -191,4 +289,11 @@ function formatDateForTitle(str) {
 
 function pad(i) {
     return ("0" + i).slice(-2);
+}
+
+function commaSeparate(val){
+    while (/(\d+)(\d{3})/.test(val.toString())){
+        val = val.toString().replace(/(\d+)(\d{3})/, '$1'+','+'$2');
+    }
+    return val;
 }
