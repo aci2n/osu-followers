@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name osu! followers
-// @version 0.27
+// @version 0.28
 // @author Alvaro Daniel Calace
 // @namespace https://github.com/alvarocalace/osufollowers
 // @description Adds a new followed players section in your osu! profile
@@ -27,7 +27,8 @@ var defaultTimeout = 2000;
 
 $(window).load(
     function main(){
-        username = getCookie('last_login');
+        //fix para rafa
+        username = unescape(getCookie('last_login'));
         var profileUsername = $('.profile-username');
         if (username && ((URL_USER + username).match(document.URL + '*') || (profileUsername && profileUsername.first().text().trim() === username))) {
             waitForSelector('#full', init, defaultTimeout);
