@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name osu! followers
-// @version 0.25
+// @version 0.26
 // @author Alvaro Daniel Calace
 // @namespace https://github.com/alvarocalace/osufollowers
 // @description Adds a new followed players section in your osu! profile
@@ -42,7 +42,7 @@ function init() {
     $('#full').after(mainDiv);   
     mainDiv.append(prepareTitleDiv());	
     mainDiv.append(prepareScoresDiv());
-	mainDiv.append(prepareShowMeMore());
+	mainDiv.append(prepareShowMeMoreDiv());
 	appendBatch();
     mainDiv.append('<br>');
 	mainDiv.append(preparePlayersDiv());
@@ -60,7 +60,7 @@ function prepareScoresDiv() {
 	return $('<div>').attr('id', 'scoresDiv').append($('<table>').attr('id', 'scoresTable'));
 }
 
-function prepareShowMeMore() {
+function prepareShowMeMoreDiv() {
 	return $('<div>').attr('id', 'showMeMoreDiv').append(
 		$('<a>').attr('href', '#').text("Show me more...").click(function(event){
 			event.preventDefault();
@@ -72,7 +72,7 @@ function prepareShowMeMore() {
 }
 
 function preparePlayersDiv() {
-	return $('<div>').attr('id', 'playersDiv').append(prepareExpandPlayersButton()).append(preparePlayersInput()).append(prepareMessageSpan());
+	return $('<div>').attr('id', 'playersDiv').append(prepareExpandPlayersButton()).append(preparePlayersInput());
 }
 
 function prepareExpandPlayersButton() {
@@ -95,10 +95,6 @@ function preparePlayersInput() {
 			}
 		}
     });	
-}
-
-function prepareMessageSpan() {
-	return $('<span>').attr('id', 'messageSpan').css('padding-left', '10px').css('color', '#848484');
 }
 
 function preparePlayersTableDiv() {
@@ -231,7 +227,7 @@ function initPlayersTable() {
 	var url = URL_BASE + URL_API_PLAYERS + '?username=' + encodeURIComponent(username);
 	var loadingIcon = $('#playersTableLoadingIcon').show();
 	createGetRequest(url, function(response) {
-		loadingIcon.hide();
+		loadingIcon.remove();
 		data = $.parseJSON(response.responseText);
 		for (var i = 0; i < data.length; i++) {
 			appendToPlayersTable(data[i]);
@@ -273,7 +269,8 @@ function createPostRequest(url, params, callback) {
 //UTILITIES
 
 function showMessage(message) {
-	$('#messageSpan').text(message).fadeIn(400).delay(4000).fadeOut(400);
+	$('#messageSpan').remove();
+	$('#playersDiv').append($('<span>').attr('id', 'messageSpan').css('padding-left', '10px').css('color', '#848484').text(message).fadeIn(400).delay(4000).fadeOut(400));
 }
 
 function refreshPlayerTableRowClasses() {
@@ -337,6 +334,7 @@ function commaSeparate(val){
 }
 
 //SYNC LOCK
+
 function isLocked() {
 	return lock;
 }
