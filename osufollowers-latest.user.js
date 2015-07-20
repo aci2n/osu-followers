@@ -1,12 +1,12 @@
 // ==UserScript==
 // @name osu! followers
-// @version 0.28
+// @version 0.29
 // @author Alvaro Daniel Calace
 // @namespace https://github.com/alvarocalace/osufollowers
 // @description Adds a new followed players section in your osu! profile
 // @require http://code.jquery.com/jquery-latest.js
 // @require http://timeago.yarp.com/jquery.timeago.js
-// @include https://osu.ppy.sh/u/*
+// @include /osu.ppy.sh\/u\//
 // @copyright 2015, Alvaro Daniel Calace
 // @downloadURL https://raw.githubusercontent.com/alvarocalace/osufollowers/master/osufollowers-latest.user.js
 // @grant GM_xmlhttpRequest
@@ -15,6 +15,7 @@
 var username;
 var URL_USER = 'https://osu.ppy.sh/u/';
 var URL_BEATMAP = 'https://osu.ppy.sh/b/';
+var URL_RANK = 'https://osu.ppy.sh/p/pp?c=';
 var URL_BASE = 'http://itoon-osufollower.rhcloud.com';
 var URL_API_SCORES = '/api/FollowedPlayersRecentTopScores';
 var URL_API_PLAYERS = '/api/GetFollowedPlayers';
@@ -27,10 +28,7 @@ var defaultTimeout = 2000;
 
 $(window).load(
     function main(){
-        //fix para rafa
-        username = unescape(getCookie('last_login'));
-        var profileUsername = $('.profile-username');
-        if (username && ((URL_USER + username).match(document.URL + '*') || (profileUsername && profileUsername.first().text().trim() === username))) {
+        if (validateUser()) {
             waitForSelector('#full', init, defaultTimeout);
         }
     }
@@ -83,7 +81,7 @@ function prepareExpandPlayersButton() {
 		img.css('-webkit-transform') === 'none' ? img.css('-webkit-transform', 'rotate(-90deg)') : img.css('-webkit-transform', '');
 		var divSettings = $('#playersTableDiv');
 		divSettings.css('display') === 'none' ? divSettings.show() : divSettings.hide();
-	}).append($('<img>').attr('src','https://upload.wikimedia.org/wikipedia/commons/f/f7/Arrow-down-navmenu.png').css('-webkit-transform', 'rotate(-90deg)').css('padding-right', '3px').css('height', '11px').css('width', '11px'));
+	}).append($('<img>').attr('src','https://upload.wikimedia.org/wikipedia/commons/f/f7/Arrow-down-navmenu.png').css('padding-right', '3px').css('height', '11px').css('width', '11px'));
 }
 
 function preparePlayersInput() {
@@ -99,7 +97,7 @@ function preparePlayersInput() {
 }
 
 function preparePlayersTableDiv() {
-	return $('<div>').attr('id', 'playersTableDiv').css('padding-top', '5px').hide().append(
+	return $('<div>').attr('id', 'playersTableDiv').css('padding-top', '5px').append(
 		$('<table>').attr('id', 'playersTable').addClass('beatmapListing').attr('cellspacing', '0')
 			.append($('<thead>')
 				.append($('<tr>')
@@ -135,16 +133,17 @@ function appendToScoresTable(d) {
 }
 
 function appendToPlayersTable(d) {
-	var rowClass = $('#playersTable > tbody > tr').length % 2 === 1 ? 'row2p' : 'row1p';
+	var table = $('#playersTable');
+	var rowClass = table.find('tbody > tr').length % 2 === 1 ? 'row2p' : 'row1p';
 
-	var deleteButton = $('<a>').attr('href', '#').click(function(event) {
+	var deleteButton = $('<td>').click(function(event) {
 		event.preventDefault();
 		if (!isLocked()) {
 			if (confirm('Are you sure you want to stop following ' + d.username + '?')) {
-				var row = $(this);
+				var row = $(this).parent();
 				var index = row.index();
 				processDelete(username, d.username);
-				row.closest('tr').remove();
+				row.remove();
 				refreshPlayerTableRowClasses(index);
 			}
 		}
@@ -156,20 +155,18 @@ function appendToPlayersTable(d) {
 	var pp = d.pp ? (d.pp === '0' ? 'unavailable' : d.pp + 'pp') : '';
 	var playcount = d.playcount ? commaSeparate(d.playcount) : '';
 	
-	$('#playersTable').append(
-		$('<tr>').addClass(rowClass)//.attr('onclick','document.location="/u/' + d.username + '"')
+	table.append(
+		$('<tr>').addClass(rowClass)//.attr('onclick','document.location="/u/' + encodeURIComponent(d.username) + '"')
 			.append($('<td>').css('font-weight', 'bold').text(rank))
 			.append($('<td>')
-				.append($('<img>').attr('src', '//s.ppy.sh/images/flags/' + country + '.gif'))
+				.append($('<a>').attr('href', URL_RANK + d.country).append($('<img>').attr('src', '//s.ppy.sh/images/flags/' + country + '.gif')))
 				.append(' ')
 				.append($('<a>').attr('target', '_blank').attr('href', URL_USER + d.username).text(d.username))
 			)
 			.append($('<td>').text(acc))
 			.append($('<td>').text(playcount))
 			.append($('<td>').css('font-weight', 'bold').text(pp))
-			.append($('<td>').css('text-align', 'center')
-				.append(deleteButton)
-			)
+			.append(deleteButton)
 	);
 }
 
@@ -338,6 +335,11 @@ function commaSeparate(val){
         val = val.toString().replace(/(\d+)(\d{3})/, '$1'+','+'$2');
     }
     return val;
+}
+
+function validateUser() {
+	username = unescape(getCookie('last_login'));
+	return document.URL.match('osu.ppy.sh/u/' + encodeURIComponent(username)) || $('.profile-username').first().text().trim() === username;
 }
 
 //SYNC LOCK
