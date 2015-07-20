@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name osu! followers
-// @version 0.26
+// @version 0.27
 // @author Alvaro Daniel Calace
 // @namespace https://github.com/alvarocalace/osufollowers
 // @description Adds a new followed players section in your osu! profile
@@ -140,9 +140,11 @@ function appendToPlayersTable(d) {
 		event.preventDefault();
 		if (!isLocked()) {
 			if (confirm('Are you sure you want to stop following ' + d.username + '?')) {
+				var row = $(this);
+				var index = row.index();
 				processDelete(username, d.username);
-				$(this).closest('tr').remove();
-				refreshPlayerTableRowClasses();
+				row.closest('tr').remove();
+				refreshPlayerTableRowClasses(index);
 			}
 		}
 	}).append($('<img>').attr('src','https://cdn2.iconfinder.com/data/icons/windows-8-metro-style/128/delete.png').css('width', '10px').css('height', '10px'));
@@ -176,6 +178,7 @@ function processDelete(username, player) {
 	closeLock();
     var url = URL_BASE + URL_DELETE; 
 	var params = 'username=' + encodeURIComponent(username) + '&player=' + encodeURIComponent(player);
+	var loadingIcon = $('#playersTableLoadingIcon').show();
     createPostRequest(url, params, function(response){
         if (response.status === 200) {
 			showMessage('you are not following ' + player + ' anymore');
@@ -183,6 +186,7 @@ function processDelete(username, player) {
         } else {
 			showMessage('a server error has occurred, please try again later');
 		}
+		loadingIcon.hide();
 		openLock();
     });
 }
@@ -191,6 +195,7 @@ function processAdd(username, player) {
 	closeLock();
     var url = URL_BASE + URL_ADD; 
 	var params = 'username=' + encodeURIComponent(username) + '&player=' + encodeURIComponent(player);
+	var loadingIcon = $('#playersTableLoadingIcon').show();
     createPostRequest(url, params, function(response){
         if (response.status === 200) {
 			var data = $.parseJSON(response.responseText);
@@ -202,6 +207,7 @@ function processAdd(username, player) {
 		} else {
 			showMessage('a server error has occurred, please try again later');
 		}
+		loadingIcon.hide();
 		openLock();
     });
 }
@@ -211,12 +217,12 @@ function appendBatch() {
     var url = URL_BASE + URL_API_SCORES + '?username=' + encodeURIComponent(username) + '&startingIndex=' + encodeURIComponent(index);
     var loadingIcon = $('#scoresLoadingIcon').show();
     createGetRequest(url, function(response){
-        loadingIcon.hide();
         var data = $.parseJSON(response.responseText);
         for (var i = 0; i < data.length; i++) {
             appendToScoresTable(data[i]);
             index++;
         }
+		loadingIcon.hide();
         openLock();
     });
 }
@@ -227,11 +233,11 @@ function initPlayersTable() {
 	var url = URL_BASE + URL_API_PLAYERS + '?username=' + encodeURIComponent(username);
 	var loadingIcon = $('#playersTableLoadingIcon').show();
 	createGetRequest(url, function(response) {
-		loadingIcon.remove();
 		data = $.parseJSON(response.responseText);
 		for (var i = 0; i < data.length; i++) {
 			appendToPlayersTable(data[i]);
 		}
+		loadingIcon.hide();
 		openLock();
 	});
 }
@@ -273,9 +279,9 @@ function showMessage(message) {
 	$('#playersDiv').append($('<span>').attr('id', 'messageSpan').css('padding-left', '10px').css('color', '#848484').text(message).fadeIn(400).delay(4000).fadeOut(400));
 }
 
-function refreshPlayerTableRowClasses() {
+function refreshPlayerTableRowClasses(index) {
 	var rows = $('#playersTable > tbody  > tr');
-	for (var i = 0; i < rows.length; i++) {
+	for (var i = index; i < rows.length; i++) {
 		rows[i].className = i % 2 === 1 ? 'row2p' : 'row1p';
 	}
 }
