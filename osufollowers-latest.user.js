@@ -35,112 +35,119 @@ $(window).load(
     }
 );
 
+//MAIN INITIALIZER
+
 function init() {
-    var followedDiv = $('<div>');
-    $('#full').after(followedDiv);    
-    followedDiv.append('<div id="followedPlayersTitle"class="profileStatHeader">Followed Players</div>');
-
-    var followedTable = $('<table>').attr('id', 'followedTable');
-    followedDiv.append(followedTable);
-
-    var showMeMore = $('<a>').attr('href', '#').text("Show me more...").on('click', function(event){
-        event.preventDefault();
-        if (!isLocked()) {
-            appendBatch();
-        }
-    });
-    followedDiv.append($('<div>').append(showMeMore));
-	
+    var mainDiv = $('<div>').attr('id', 'osuFollowersMainDiv');
+    $('#full').after(mainDiv);   
+    mainDiv.append(prepareTitleDiv());	
+    mainDiv.append(prepareScoresDiv());
+	mainDiv.append(prepareShowMeMore());
 	appendBatch();
+    mainDiv.append('<br>');
+	mainDiv.append(preparePlayersDiv());
+	mainDiv.append(preparePlayersTableDiv());
+	initPlayersTable();
+}
 
-    showMeMore.after($('<img>').attr('id', 'followedLoadingIcon').attr('src', 'http://www.ajaxload.info/images/exemples/30.gif').css('height', '11px').css('width', '11px'));
+//STATIC ELEMENTS
 
-    followedDiv.append('<br>');
+function prepareTitleDiv() {
+	return $('<div>').attr('id', 'osuFollowersTitleDiv').addClass('profileStatHeader').text('Followed Players');
+}
 
-	var divInput = $('<div>');
-	
-	var settingsLink = $('<a>').attr('href', '#').on('click', function(event) {
+function prepareScoresDiv() {
+	return $('<div>').attr('id', 'scoresDiv').append($('<table>').attr('id', 'scoresTable'));
+}
+
+function prepareShowMeMore() {
+	return $('<div>').attr('id', 'showMeMoreDiv').append(
+		$('<a>').attr('href', '#').text("Show me more...").click(function(event){
+			event.preventDefault();
+			if (!isLocked()) {
+				appendBatch();
+			}
+		})
+	).append($('<img>').attr('id', 'scoresLoadingIcon').attr('src', 'http://www.ajaxload.info/images/exemples/30.gif').css('height', '11px').css('width', '11px').hide());
+}
+
+function preparePlayersDiv() {
+	return $('<div>').attr('id', 'playersDiv').append(prepareExpandPlayersButton()).append(preparePlayersInput()).append(prepareMessageSpan());
+}
+
+function prepareExpandPlayersButton() {
+	return $('<a>').attr('id', 'expandPlayersButton').attr('href', '#').click(function(event) {
 		event.preventDefault();
 		var img = $(this).children(":first");
 		img.css('-webkit-transform') === 'none' ? img.css('-webkit-transform', 'rotate(-90deg)') : img.css('-webkit-transform', '');
-		var divSettings = $('#divSettings');
+		var divSettings = $('#playersTableDiv');
 		divSettings.css('display') === 'none' ? divSettings.show() : divSettings.hide();
 	}).append($('<img>').attr('src','https://upload.wikimedia.org/wikipedia/commons/f/f7/Arrow-down-navmenu.png').css('-webkit-transform', 'rotate(-90deg)').css('padding-right', '3px').css('height', '11px').css('width', '11px'));
-	divInput.append(settingsLink);
-	
-    var inputPlayer = $('<input>').attr('placeholder', 'follow a new player!').attr('id', 'inputPlayer');
-    followedDiv.append(divInput.append(inputPlayer));
-    inputPlayer.on('keydown', function(event) {
-        var player = $(this).val();
-        if (!isLocked() && event.which === 13 && player) {
-            $(this).val('');
-            processAdd(username, player);
-        }
+}
+
+function preparePlayersInput() {
+	return $('<input>').attr('id', 'playersInput').attr('placeholder', 'follow a new player!').on('keydown', function(event) {
+		if (!isLocked()) {
+			var player = $(this).val();
+			if (event.which === 13 && player) {
+				$(this).val('');
+				processAdd(username, player);
+			}
+		}
     });	
-		
-	var divSettings = $('<div>').attr('id', 'divSettings').css('padding-top', '5px').hide();
-	followedDiv.append(divSettings);
-	var settingsTable = $('<table>').attr('id', 'settingsTable').attr('class', 'beatmapListing').attr('cellspacing', '0');
-	settingsTable.append($('<thead>')
-		.append($('<tr>')
-			.append($('<th>').text('Rank'))
-			.append($('<th>').text('Player'))
-			.append($('<th>').text('Accuracy'))
-			.append($('<th>').text('Playcount'))
-			.append($('<th>').text('Performance'))
-			.append($('<th>').text('Delete'))
+}
+
+function prepareMessageSpan() {
+	return $('<span>').attr('id', 'messageSpan').css('padding-left', '10px').css('color', '#848484');
+}
+
+function preparePlayersTableDiv() {
+	return $('<div>').attr('id', 'playersTableDiv').css('padding-top', '5px').hide().append(
+		$('<table>').attr('id', 'playersTable').addClass('beatmapListing').attr('cellspacing', '0')
+			.append($('<thead>')
+				.append($('<tr>')
+					.append($('<th>').text('Rank'))
+					.append($('<th>').text('Player'))
+					.append($('<th>').text('Accuracy'))
+					.append($('<th>').text('Playcount'))
+					.append($('<th>').text('Performance'))
+					.append($('<th>').text('Delete'))
+				)
+			)
+	).append($('<img>').attr('id', 'playersTableLoadingIcon').attr('src', 'http://www.ajaxload.info/images/exemples/30.gif').css('height', '11px').css('width', '11px').hide());
+}
+
+//DYNAMIC ELEMENTS
+
+function appendToScoresTable(d) {
+	$('#scoresTable').append($('<tr>')
+			.append($('<td>').css('width', '20%')
+				.append($('<time>').addClass('timeago').attr('datetime', d.date).attr('title', formatDateForTitle(d.date)).text($.timeago(d.date)))
+			)
+			.append($('<td>')
+			.append($('<div>').addClass('event epic1')
+				.append($('<img>').attr('src', '/images/' + d.rank +'_small.png'))
+				.append(' ')
+				.append($('<a>').attr('href', URL_USER + d.username).attr('target', '_blank').css('font-weight', 'bold').text(d.username)) 
+				.append(' got ' + d.pp + ' pp on ')
+				.append($('<a>').attr('href',URL_BEATMAP + d.beatmapId).attr('target', '_blank').text(d.artist + ' - ' + d.title + ' [' + d.version + '] '))
+				.append (' (' + modsToString(d.mods) + ') ')
+			)
 		)
 	);
-	divSettings.append(settingsTable);
-	divSettings.append($('<img>').attr('id', 'settingsTableLoadingIcon').attr('src', 'http://www.ajaxload.info/images/exemples/30.gif').css('height', '11px').css('width', '11px'));
-	initSettingsTable();
 }
 
-function appendFollowedRow(d) {
-    $('#followedTable').append($('<tr>')
-		 .append($('<td>').css('width', '20%')
-				 .append($('<time>').attr('class', 'timeago').attr('datetime', d.date).attr('title', formatDateForTitle(d.date)).text($.timeago(d.date)))
-				)
-		 .append($('<td>')
-				 .append($('<div>').attr('class', 'event epic1')
-						 .append($('<img>').attr('src', '/images/' + d.rank +'_small.png'))
-						 .append(' ')
-						 .append($('<a>').attr('href', URL_USER + d.username).attr('target', '_blank').css('font-weight', 'bold').text(d.username)) 
-						 .append(' got ' + d.pp + ' pp on ')
-						 .append($('<a>').attr('href',URL_BEATMAP + d.beatmapId).attr('target', '_blank').text(d.artist + ' - ' + d.title + ' [' + d.version + '] '))
-						 .append (' (' + modsToString(d.mods) + ') ')
-						)
-				)
-		);
-}
+function appendToPlayersTable(d) {
+	var rowClass = $('#playersTable > tbody > tr').length % 2 === 1 ? 'row2p' : 'row1p';
 
-function initSettingsTable() {
-	closeLock();
-	var data = [];
-	var url = URL_BASE + URL_API_PLAYERS + '?username=' + encodeURIComponent(username);
-	createGetRequest(url, function(response) {
-		data = $.parseJSON(response.responseText);
-		for (var i = 0; i < data.length; i++) {
-			appendToSettingsTable(data[i]);
-		}
-		$('#settingsTableLoadingIcon').hide();
-		openLock();
-	});
-}
-
-function appendToSettingsTable(d) {
-	var rowClass = $('#settingsTable > tbody > tr').length % 2 === 1 ? 'row2p' : 'row1p';
-
-	var deleteButton = $('<a>').attr('href', '#').on('click', function(event) {
+	var deleteButton = $('<a>').attr('href', '#').click(function(event) {
 		event.preventDefault();
-		var conf = confirm('Are you sure you want to stop following ' + d.username + '?');
-		if (!isLocked() && conf) {
-			processDelete(username, d.username);
-			$(this).closest('tr').remove();
-			$('#settingsTable > tbody  > tr').each(function() {
-				var rowClass = $(this).index() % 2 === 1 ? 'row2p' : 'row1p'
-				$(this).attr('class', rowClass);
-			});
+		if (!isLocked()) {
+			if (confirm('Are you sure you want to stop following ' + d.username + '?')) {
+				processDelete(username, d.username);
+				$(this).closest('tr').remove();
+				refreshPlayerTableRowClasses();
+			}
 		}
 	}).append($('<img>').attr('src','https://cdn2.iconfinder.com/data/icons/windows-8-metro-style/128/delete.png').css('width', '10px').css('height', '10px'));
 
@@ -150,8 +157,8 @@ function appendToSettingsTable(d) {
 	var pp = d.pp ? (d.pp === '0' ? 'unavailable' : d.pp + 'pp') : '';
 	var playcount = d.playcount ? commaSeparate(d.playcount) : '';
 	
-	$('#settingsTable').append(
-		$('<tr>').attr('class', rowClass)//.attr('onclick','document.location="/u/' + d.username + '"')
+	$('#playersTable').append(
+		$('<tr>').addClass(rowClass)//.attr('onclick','document.location="/u/' + d.username + '"')
 			.append($('<td>').css('font-weight', 'bold').text(rank))
 			.append($('<td>')
 				.append($('<img>').attr('src', '//s.ppy.sh/images/flags/' + country + '.gif'))
@@ -164,10 +171,11 @@ function appendToSettingsTable(d) {
 			.append($('<td>').css('text-align', 'center')
 				.append(deleteButton)
 			)
-		);
+	);
 }
 
 //AJAX
+
 function processDelete(username, player) {
 	closeLock();
     var url = URL_BASE + URL_DELETE; 
@@ -175,7 +183,7 @@ function processDelete(username, player) {
     createPostRequest(url, params, function(response){
         if (response.status === 200) {
 			showMessage('you are not following ' + player + ' anymore');
-			refreshTable();
+			refreshScoresTable();
         } else {
 			showMessage('a server error has occurred, please try again later');
 		}
@@ -190,9 +198,9 @@ function processAdd(username, player) {
     createPostRequest(url, params, function(response){
         if (response.status === 200) {
 			var data = $.parseJSON(response.responseText);
-			appendToSettingsTable(data);
+			appendToPlayersTable(data);
 			showMessage('you are now following ' + data.username);
-			refreshTable();
+			refreshScoresTable();
         } else if (response.status = 422){
 			showMessage(response.responseText);
 		} else {
@@ -205,26 +213,35 @@ function processAdd(username, player) {
 function appendBatch() {
     closeLock();
     var url = URL_BASE + URL_API_SCORES + '?username=' + encodeURIComponent(username) + '&startingIndex=' + encodeURIComponent(index);
-    $('#followedLoadingIcon').show();
+    var loadingIcon = $('#scoresLoadingIcon').show();
     createGetRequest(url, function(response){
-        $('#followedLoadingIcon').hide();
+        loadingIcon.hide();
         var data = $.parseJSON(response.responseText);
         for (var i = 0; i < data.length; i++) {
-            appendFollowedRow(data[i]);
+            appendToScoresTable(data[i]);
             index++;
         }
         openLock();
     });
 }
 
-function showMessage(message) {
-	$('#messageAdded').remove();
-	var span = $('<span>').attr('id', 'messageAdded').css('padding-left', '10px').css('color', '#848484').text(message).fadeIn(400).delay(5000).fadeOut(400);
-	$('#inputPlayer').after(span);
+function initPlayersTable() {
+	closeLock();
+	var data = [];
+	var url = URL_BASE + URL_API_PLAYERS + '?username=' + encodeURIComponent(username);
+	var loadingIcon = $('#playersTableLoadingIcon').show();
+	createGetRequest(url, function(response) {
+		loadingIcon.hide();
+		data = $.parseJSON(response.responseText);
+		for (var i = 0; i < data.length; i++) {
+			appendToPlayersTable(data[i]);
+		}
+		openLock();
+	});
 }
 
-function refreshTable() {
-	$('#followedTable').empty();
+function refreshScoresTable() {
+	$('#scoresTable').empty();
 	index = 0;
 	appendBatch();
 }
@@ -254,7 +271,21 @@ function createPostRequest(url, params, callback) {
 }
 
 //UTILITIES
-function getCookie(k){return(document.cookie.match('(^|; )'+k+'=([^;]*)')||0)[2];}
+
+function showMessage(message) {
+	$('#messageSpan').text(message).fadeIn(400).delay(4000).fadeOut(400);
+}
+
+function refreshPlayerTableRowClasses() {
+	var rows = $('#playersTable > tbody  > tr');
+	for (var i = 0; i < rows.length; i++) {
+		rows[i].className = i % 2 === 1 ? 'row2p' : 'row1p';
+	}
+}
+
+function getCookie(k){
+	return (document.cookie.match('(^|; )' + k + '=([^;]*)') || 0)[2];
+}
 
 function modsToString(mods) {
     var str = '';
