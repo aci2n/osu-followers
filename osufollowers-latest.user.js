@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name osu! followers
-// @version 0.29
+// @version 0.30
 // @author Alvaro Daniel Calace
 // @namespace https://github.com/alvarocalace/osufollowers
 // @description Adds a new followed players section in your osu! profile
@@ -29,16 +29,16 @@ var defaultTimeout = 2000;
 $(window).load(
     function main(){
         if (validateUser()) {
-            waitForSelector('#full', init, defaultTimeout);
+            waitForSelector('.profileStatHeader:eq(1)', init, defaultTimeout);
         }
     }
 );
 
 //MAIN INITIALIZER
 
-function init() {
+function init(elem) {
     var mainDiv = $('<div>').attr('id', 'osuFollowersMainDiv');
-    $('#full').after(mainDiv);   
+    elem.before(mainDiv);   
     mainDiv.append(prepareTitleDiv());	
     mainDiv.append(prepareScoresDiv());
 	mainDiv.append(prepareShowMeMoreDiv());
@@ -136,7 +136,7 @@ function appendToPlayersTable(d) {
 	var table = $('#playersTable');
 	var rowClass = table.find('tbody > tr').length % 2 === 1 ? 'row2p' : 'row1p';
 
-	var deleteButton = $('<td>').click(function(event) {
+	var deleteButton = $('<td>').css('text-align', 'center').click(function(event) {
 		event.preventDefault();
 		if (!isLocked()) {
 			if (confirm('Are you sure you want to stop following ' + d.username + '?')) {
@@ -299,9 +299,10 @@ function modsToString(mods) {
 function waitForSelector(selector, callback, timeout){
     var waited = 0;
     var interval = setInterval(function() {
-        if ($(selector).length) {
+        var elem = $(selector);
+        if (elem.length) {
             clearInterval(interval);
-            callback();
+            callback(elem);
         } else {
             waited += pollingRate;
             if (waited >= timeout) {
@@ -338,8 +339,23 @@ function commaSeparate(val){
 }
 
 function validateUser() {
-	username = unescape(getCookie('last_login'));
-	return document.URL.match('osu.ppy.sh/u/' + encodeURIComponent(username)) || $('.profile-username').first().text().trim() === username;
+    var profileName = $('.profile-username').first().text().trim();
+    
+    //first try with cookie
+	username = getCookie('last_login');
+    if (username) {
+        username = username.replace(/\+/g,' ');
+        if (username === profileName) {
+            return true;
+        }
+    }
+   //then try with content infoline name
+    username = $('.content-infoline').last().find('a').first().text();
+    if (username === profileName) {
+        return true;
+    }
+    //if both fail then return false
+    return false;
 }
 
 //SYNC LOCK
