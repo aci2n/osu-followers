@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name osu! followers
-// @version 0.31
+// @version 0.32
 // @author Alvaro Daniel Calace
 // @namespace https://github.com/alvarocalace/osufollowers
 // @description Adds a new followed players section in your osu! profile
@@ -21,6 +21,7 @@ var URL_API_SCORES = '/api/FollowedPlayersRecentTopScores';
 var URL_API_PLAYERS = '/api/GetFollowedPlayers';
 var URL_ADD = '/AddFollowedPlayer';
 var URL_DELETE = '/DeleteFollowedPlayer';
+var URL_INITIALIZE_USER = '/InitializeUser';
 var index = 0;
 var lock = 0;
 var pollingRate = 10;
@@ -42,11 +43,10 @@ function init(elem) {
     mainDiv.append(prepareTitleDiv());	
     mainDiv.append(prepareScoresDiv());
 	mainDiv.append(prepareShowMeMoreDiv());
-	appendBatch();
     mainDiv.append('<br>');
 	mainDiv.append(preparePlayersDiv());
 	mainDiv.append(preparePlayersTableDiv());
-	initPlayersTable();
+	initUser();
 }
 
 //STATIC ELEMENTS
@@ -124,8 +124,10 @@ function appendToScoresTable(d) {
 				.append($('<img>').attr('src', '/images/' + d.rank +'_small.png'))
 				.append(' ')
 				.append($('<a>').attr('href', URL_USER + d.username).attr('target', '_blank').css('font-weight', 'bold').text(d.username)) 
-				.append(' got ' + d.pp + ' pp on ')
-				.append($('<a>').attr('href',URL_BEATMAP + d.beatmap.beatmapId).attr('target', '_blank').text(d.beatmap.artist + ' - ' + d.beatmap.title + ' [' + d.beatmap.version + '] '))
+				.append(' got ')
+                .append($('<span>').css('font-weight', 'bold').text(d.pp + 'pp'))
+                .append(' on ')
+				.append($('<a>').attr('href', URL_BEATMAP + d.beatmap.beatmapId).attr('target', '_blank').text(d.beatmap.artist + ' - ' + d.beatmap.title + ' [' + d.beatmap.version + '] '))
 				.append (' (' + modsToString(d.mods) + ') ')
 			)
 		)
@@ -171,6 +173,15 @@ function appendToPlayersTable(d) {
 }
 
 //AJAX
+
+function initUser() {
+	var url = URL_BASE + URL_INITIALIZE_USER;
+	var params =	'username=' + encodeURIComponent(username);
+	createPostRequest(url, params, function(response){
+		appendBatch();
+		initPlayersTable();
+	});
+}
 
 function processDelete(username, player) {
 	closeLock();
@@ -328,7 +339,7 @@ function formatDateForTitle(str) {
 }
 
 function pad(i) {
-    return ("0" + i).slice(-2);
+    return ('0' + i).slice(-2);
 }
 
 function commaSeparate(val){
