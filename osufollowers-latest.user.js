@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name osu! followers
-// @version 0.32
+// @version 0.33
 // @author Alvaro Daniel Calace
 // @namespace https://github.com/alvarocalace/osufollowers
 // @description Adds a new followed players section in your osu! profile
@@ -27,13 +27,12 @@ var lock = 0;
 var pollingRate = 10;
 var defaultTimeout = 2000;
 
-$(window).load(
-    function main(){
-        if (validateUser()) {
-            waitForSelector('.profileStatHeader:eq(1)', init, defaultTimeout);
-        }
-    }
-);
+
+(function main(){
+	if (validateUser()) {
+		waitForSelector('.profileStatHeader:eq(1)', init, defaultTimeout);
+	}
+})();
 
 //MAIN INITIALIZER
 
