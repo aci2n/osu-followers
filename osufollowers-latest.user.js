@@ -125,7 +125,7 @@ function appendToScoresTable(d) {
 				.append(' ')
 				.append($('<a>').attr('href', URL_USER + d.username).attr('target', '_blank').css('font-weight', 'bold').text(d.username)) 
 				.append(' got ' + d.pp + ' pp on ')
-				.append($('<a>').attr('href',URL_BEATMAP + d.beatmap.beatmapId).attr('target', '_blank').text(d.beatmap.artist + ' - ' + d.beatmap.title + ' [' + d.version + '] '))
+				.append($('<a>').attr('href',URL_BEATMAP + d.beatmap.beatmapId).attr('target', '_blank').text(d.beatmap.artist + ' - ' + d.beatmap.title + ' [' + d.beatmap.version + '] '))
 				.append (' (' + modsToString(d.mods) + ') ')
 			)
 		)
