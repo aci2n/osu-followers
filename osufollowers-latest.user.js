@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name osu! followers
-// @version 0.34
+// @version 0.35
 // @author Alvaro Daniel Calace
 // @namespace https://github.com/alvarocalace/osufollowers
 // @description Adds a new followed players section in your osu! profile
@@ -12,4 +12,401 @@
 // @grant GM_xmlhttpRequest
 // ==/UserScript==
 
-eval(function(p,a,c,k,e,d){e=function(c){return(c<a?'':e(parseInt(c/a)))+((c=c%a)>35?String.fromCharCode(c+29):c.toString(36))};if(!''.replace(/^/,String)){while(c--){d[e(c)]=k[c]||e(c)}k=[function(e){return d[e]}];e=function(){return'\\w+'};c=1};while(c--){if(k[c]){p=p.replace(new RegExp('\\b'+e(c)+'\\b','g'),k[c])}}return p}('4 9;4 1G=\'14://1I.1m.1e/u/\';4 2D=\'14://1I.1m.1e/b/\';4 2i=\'14://1I.1m.1e/p/z?c=\';4 12=\'1w://3D-3C.3B.38\';4 2e=\'/2F/3A\';4 2j=\'/2F/3E\';4 1Z=\'/3F\';4 29=\'/3I\';4 A=0;4 1h=0;4 1T=10;4 2J=3H;(6 3G(){l(2K()){33(\'.2p:21(1)\',2H,2J)}})();6 2H(Z){4 E=$(\'<M>\').7(\'o\',\'3z\');Z.22(E);E.5(2y());E.5(2x());E.5(2v());E.5(\'<3y>\');E.5(37());E.5(2a());1o();2d()}6 2y(){j $(\'<M>\').7(\'o\',\'3r\').1n(\'2p\').h(\'3q 3p\')}6 2x(){j $(\'<M>\').7(\'o\',\'3o\').5($(\'<H>\').7(\'o\',\'1V\'))}6 2v(){j $(\'<M>\').7(\'o\',\'3s\').5($(\'<a>\').7(\'T\',\'#\').h("3t 3x 3w...").1D(6(y){y.1E();l(!19()){1o()}})).5($(\'<w>\').7(\'o\',\'2b\').7(\'N\',\'1w://1Q.2Q.2S/1l/39/30.1K\').e(\'1s\',\'Q\').e(\'11\',\'Q\').L())}6 37(){j $(\'<M>\').7(\'o\',\'2T\').5(36()).5(2X())}6 36(){j $(\'<a>\').7(\'o\',\'3v\').7(\'T\',\'#\').1D(6(y){y.1E();4 w=$(1q).3u(":1J");w.e(\'-1M-1v\')===\'31\'?w.e(\'-1M-1v\',\'3J(-3K)\'):w.e(\'-1M-1v\',\'\');4 1j=$(\'#24\');1j.e(\'3Z\')===\'31\'?1j.17():1j.L()}).5($(\'<w>\').7(\'N\',\'14://3Y.3X.3W/40/41/f/44/43-42-3V.1S\').e(\'1A-3n\',\'3O\').e(\'1s\',\'Q\').e(\'11\',\'Q\'))}6 2X(){j $(\'<3N>\').7(\'o\',\'3M\').7(\'3L\',\'3P a 1X v!\').2B(\'3Q\',6(y){l(!19()){4 v=$(1q).J();l(y.3T===13&&v){$(1q).J(\'\');2g(9,v)}}})}6 2a(){j $(\'<M>\').7(\'o\',\'24\').e(\'1A-3S\',\'3R\').5($(\'<H>\').7(\'o\',\'1z\').1n(\'45\').7(\'3d\',\'0\').5($(\'<3h>\').5($(\'<W>\').5($(\'<U>\').h(\'3f\')).5($(\'<U>\').h(\'3a\')).5($(\'<U>\').h(\'3b\')).5($(\'<U>\').h(\'3e\')).5($(\'<U>\').h(\'3m\')).5($(\'<U>\').h(\'3i\'))))).5($(\'<w>\').7(\'o\',\'1k\').7(\'N\',\'1w://1Q.2Q.2S/1l/39/30.1K\').e(\'1s\',\'Q\').e(\'11\',\'Q\').L())}6 2c(d){$(\'#1V\').5($(\'<W>\').5($(\'<D>\').e(\'11\',\'20%\').5($(\'<3c>\').1n(\'2w\').7(\'3k\',d.1U).7(\'2A\',2t(d.1U)).h($.2w(d.1U)))).5($(\'<D>\').5($(\'<M>\').1n(\'y 3l\').5($(\'<w>\').7(\'N\',\'/1l/\'+d.B+\'3j.1S\')).5(\' \').5($(\'<a>\').7(\'T\',1G+d.9).7(\'1L\',\'1H\').e(\'1g-1r\',\'1p\').h(d.9)).5(\' 3g \').5($(\'<2P>\').e(\'1g-1r\',\'1p\').h(d.z+\'z\')).5(\' 2B \').5($(\'<a>\').7(\'T\',2D+d.1c.3U).7(\'1L\',\'1H\').h(d.1c.4m+\' - \'+d.1c.2A+\' [\'+d.1c.4Y+\'] \')).5(\' (\'+32(d.1d)+\') \'))))}6 1u(d){4 27=$(\'<D>\').e(\'h-4X\',\'4W\').1D(6(y){y.1E();l(!19()){l(4Z(\'50 2s 53 2s 52 51 4V 2f \'+d.9+\'?\')){4 1W=$(1q).4U();4 A=1W.A();23(9,d.9);1W.2U();1t(A)}}}).5($(\'<w>\').7(\'N\',\'14://4O.4N.38/q/4M/55-8-4Q-4T/4S/4R.1S\').e(\'11\',\'1y\').e(\'1s\',\'1y\'));4 B=d.B?(d.B===\'0\'?\'54\':\'#\'+d.B):\'\';4 15=d.15?d.15.5i():\'5g\';4 26=d.1Y?d.1Y+\'%\':\'\';4 z=d.z?(d.z===\'0\'?\'5e\':d.z+\'z\'):\'\';4 1a=d.1a?2z(d.1a):\'\';1t(28($(\'<W>\').5($(\'<D>\').e(\'1g-1r\',\'1p\').h(B)).5($(\'<D>\').5($(\'<a>\').7(\'T\',2i+d.15).5($(\'<w>\').7(\'N\',\'//s.1m.1e/1l/5h/\'+15+\'.1K\'))).5(\' \').5($(\'<a>\').7(\'1L\',\'1H\').7(\'T\',1G+d.9).h(d.9))).5($(\'<D>\').h(26)).5($(\'<D>\').h(1a)).5($(\'<D>\').e(\'1g-1r\',\'1p\').h(z)).5(27),B))}6 28(X,B){4 H=$(\'#1z\');4 r=H.2C(\'34 > W\');l(!r.t){H.5(X);j 0}4 1F=25(B.1R(1),10);l(!1F){H.5(X);j r.t}4 F;18(F=0;F<r.t;F++){4 1N=25(r[F].5f.5c.1R(1),10);l(!1N||1F<1N){46}}l(F<r.t){r.21(F).22(X);j F}H.5(X);j r.t}6 23(9,v){Y();4 n=12+29;4 S=\'9=\'+I(9)+\'&v=\'+I(v);4 C=$(\'#1k\').17();1O(n,S,6(m){l(m.1b===1f){G(\'2h 57 5d \'+v+\'.\');1B()}16{G(m.K)}C.L();V()})}6 2g(9,v){Y();4 n=12+1Z;4 S=\'9=\'+I(9)+\'&v=\'+I(v);4 C=$(\'#1k\').17();1O(n,S,6(m){l(m.1b===1f){4 q=$.1x(m.K);1u(q);G(\'2h 56 58 2f \'+q.9+\'.\');1B()}16{G(m.K)}C.L();V()})}6 1o(){Y();4 n=12+2e+\'?9=\'+I(9)+\'&59=\'+I(A);4 C=$(\'#2b\').17();1C(n,6(m){l(m.1b===1f){4 q=$.1x(m.K);18(4 i=0;i<q.t;i++){2c(q[i]);A++}}16{G(m.K)}C.L();V()})}6 2d(){Y();4 q=[];4 n=12+2j+\'?9=\'+I(9);4 C=$(\'#1k\').17();1C(n,6(m){l(m.1b===1f){q=$.1x(m.K);18(4 i=0;i<q.t;i++){1u(q[i])}}16{G(m.K)}C.L();V()})}6 1B(){$(\'#1V\').5b();A=0;1o()}6 1C(n,O){2V({2W:\'5a\',n:n,2Y:6(m){O(m)}})}6 1O(n,S,O){2V({2W:\'4P\',n:n,q:S,4K:{\'4k-4j\':\'4i/x-1Q-4l-4L\'},2Y:6(m){O(m)}})}6 G(2k){$(\'#2O\').2U();$(\'#2T\').5($(\'<2P>\').7(\'o\',\'2O\').e(\'1A-4p\',\'1y\').e(\'4o\',\'#4n\').h(2k).4h(2Z).4g(4a).49(2Z))}6 1t(A){4 r=$(\'#1z > 34  > W\');18(4 i=A;i<r.t;i++){r[i].48=i%2===1?\'47\':\'4b\'}}6 2L(k){j(4c.4f.4e(\'(^|; )\'+k+\'=([^;]*)\')||0)[2]}6 32(1d){4 R=\'\';18(4 i=0;i<1d.t;i++){R+=1d[i]+\', \'}j R.1R(0,R.t-2)}6 33(35,O,2M){4 1P=0;4 2R=4d(6(){4 Z=$(35);l(Z.t){2u(2R);O(Z)}16{1P+=1T;l(1P>=2M){2u()}}},1T)}6 2t(R){4 d=1X 2N(R);d=1X 2N(d.4q()+(d.4r()*4E));4 2r=d.4D();4 2m=d.4C()+1;4 2l=d.4F();4 2n=d.4G();4 2o=d.4J();4 2q=d.4I();j 2r+\'-\'+P(2m)+\'-\'+P(2l)+\' \'+P(2n)+\':\'+P(2o)+\':\'+P(2q)+\' 4H\'}6 P(i){j(\'0\'+i).4B(-2)}6 2z(J){4A(/(\\d+)(\\d{3})/.4u(J.2I())){J=J.2I().2G(/(\\d+)(\\d{3})/,\'$1\'+\',\'+\'$2\')}j J}6 2K(){4 1i=$(\'.4t-9\').1J().h().4s();l(1i){9=2L(\'4v\');l(9){9=9.2G(/\\+/g,\' \');l(9===1i){j 2E}}9=$(\'.4w-4z\').4y().2C(\'a\').1J().h();l(9===1i){j 2E}}j 4x}6 19(){j 1h}6 Y(){1h--}6 V(){1h++}',62,329,'||||var|append|function|attr||username|||||css|||text||return||if|response|url|id||data|rows||length||player|img||event|pp|index|rank|loadingIcon|td|mainDiv|rowIndex|showMessage|table|encodeURIComponent|val|responseText|hide|div|src|callback|pad|11px|str|params|href|th|openLock|tr|newRow|closeLock|elem||width|URL_BASE||https|country|else|show|for|isLocked|playcount|status|beatmap|mods|sh|200|font|lock|profileName|divSettings|playersTableLoadingIcon|images|ppy|addClass|appendBatch|bold|this|weight|height|refreshPlayerTableRowClasses|appendToPlayersTable|transform|http|parseJSON|10px|playersTable|padding|refreshScoresTable|createGetRequest|click|preventDefault|newRowRank|URL_USER|_blank|osu|first|gif|target|webkit|currentRowRank|createPostRequest|waited|www|substring|png|pollingRate|date|scoresTable|row|new|accuracy|URL_ADD||eq|before|processDelete|playersTableDiv|parseInt|acc|deleteButton|appendInOrder|URL_DELETE|preparePlayersTableDiv|scoresLoadingIcon|appendToScoresTable|initPlayersTable|URL_API_SCORES|following|processAdd|You|URL_RANK|URL_API_PLAYERS|message|dd|mm|hh|mi|profileStatHeader|ss|yyyy|you|formatDateForTitle|clearInterval|prepareShowMeMoreDiv|timeago|prepareScoresDiv|prepareTitleDiv|commaSeparate|title|on|find|URL_BEATMAP|true|api|replace|init|toString|defaultTimeout|validateUser|getCookie|timeout|Date|messageSpan|span|ajaxload|interval|info|playersDiv|remove|GM_xmlhttpRequest|method|preparePlayersInput|onload|400||none|modsToString|waitForSelector|tbody|selector|prepareExpandPlayersButton|preparePlayersDiv|com|exemples|Player|Accuracy|time|cellspacing|Playcount|Rank|got|thead|Delete|_small|datetime|epic1|Performance|right|scoresDiv|Players|Followed|osuFollowersTitleDiv|showMeMoreDiv|Show|children|expandPlayersButton|more|me|br|osuFollowersMainDiv|FollowedPlayersRecentTopScores|rhcloud|osufollower|itoon|GetFollowedPlayers|AddFollowedPlayer|main|7500|DeleteFollowedPlayer|rotate|90deg|placeholder|playersInput|input|3px|follow|keydown|5px|top|which|beatmapId|navmenu|org|wikimedia|upload|display|wikipedia|commons|down|Arrow|f7|beatmapListing|break|row2p|className|fadeOut|4000|row1p|document|setInterval|match|cookie|delay|fadeIn|application|Type|Content|form|artist|848484|color|left|getTime|getTimezoneOffset|trim|profile|test|last_login|content|false|last|infoline|while|slice|getMonth|getFullYear|60000|getDate|getHours|UTC|getSeconds|getMinutes|headers|urlencoded|icons|iconfinder|cdn2|POST|metro|delete|128|style|parent|stop|center|align|version|confirm|Are|to|want|sure|unranked|windows|are|have|now|startingIndex|GET|empty|textContent|unfollowed|unavailable|firstChild|mw|flags|toLowerCase'.split('|'),0,{}))
+var username;
+var URL_USER = 'https://osu.ppy.sh/u/';
+var URL_BEATMAP = 'https://osu.ppy.sh/b/';
+var URL_RANK = 'https://osu.ppy.sh/p/pp?c=';
+var URL_BASE = 'http://itoon-osufollower.rhcloud.com';
+var URL_API_SCORES = '/api/FollowedPlayersRecentTopScores';
+var URL_API_PLAYERS = '/api/GetFollowedPlayers';
+var URL_ADD = '/AddFollowedPlayer';
+var URL_DELETE = '/DeleteFollowedPlayer';
+var index = 0;
+var lock = 0;
+var pollingRate = 10;
+var defaultTimeout = 7500;
+
+
+(function main(){
+	if (validateUser()) {
+		waitForSelector('.profileStatHeader:eq(1)', init, defaultTimeout);
+	}
+})();
+
+//MAIN INITIALIZER
+
+function init(elem) {
+    var mainDiv = $('<div>').attr('id', 'osuFollowersMainDiv');
+    elem.before(mainDiv);   
+    mainDiv.append(prepareTitleDiv());	
+    mainDiv.append(prepareScoresDiv());
+	mainDiv.append(prepareShowMeMoreDiv());
+    mainDiv.append('<br>');
+	mainDiv.append(preparePlayersDiv());
+	mainDiv.append(preparePlayersTableDiv());
+	appendBatch();
+	initPlayersTable();
+}
+
+//STATIC ELEMENTS
+
+function prepareTitleDiv() {
+	return $('<div>').attr('id', 'osuFollowersTitleDiv').addClass('profileStatHeader').text('Followed Players');
+}
+
+function prepareScoresDiv() {
+	return $('<div>').attr('id', 'scoresDiv').css('overflow-y', 'auto').css('max-height', '160px').append($('<table>').attr('id', 'scoresTable'));
+}
+
+function prepareShowMeMoreDiv() {
+	return $('<div>').attr('id', 'showMeMoreDiv').append(
+		$('<a>').attr('href', '#').text("Show me more...").click(function(event){
+			event.preventDefault();
+			if (!isLocked()) {
+				appendBatch();
+			}
+		})
+	).append($('<img>').attr('id', 'scoresLoadingIcon').attr('src', 'http://www.ajaxload.info/images/exemples/30.gif').css('height', '11px').css('width', '11px').hide());
+}
+
+function preparePlayersDiv() {
+	return $('<div>').attr('id', 'playersDiv').append(prepareExpandPlayersButton()).append(preparePlayersInput());
+}
+
+function prepareExpandPlayersButton() {
+	return $('<a>').attr('id', 'expandPlayersButton').attr('href', '#').click(function(event) {
+		event.preventDefault();
+		var img = $(this).children(":first");
+		img.css('-webkit-transform') === 'none' ? img.css('-webkit-transform', 'rotate(-90deg)') : img.css('-webkit-transform', '');
+		var divSettings = $('#playersTableDiv');
+		divSettings.css('display') === 'none' ? divSettings.show() : divSettings.hide();
+	}).append($('<img>').attr('src','https://upload.wikimedia.org/wikipedia/commons/f/f7/Arrow-down-navmenu.png').css('padding-right', '3px').css('height', '11px').css('width', '11px'));
+}
+
+function preparePlayersInput() {
+	return $('<input>').attr('id', 'playersInput').attr('placeholder', 'follow a new player!').on('keydown', function(event) {
+		if (!isLocked()) {
+			var player = $(this).val();
+			if (event.which === 13 && player) {
+				$(this).val('');
+				processAdd(username, player);
+			}
+		}
+    });	
+}
+
+function preparePlayersTableDiv() {
+	return $('<div>').attr('id', 'playersTableDiv').css('padding-top', '5px').append(
+		$('<table>').attr('id', 'playersTable').addClass('beatmapListing').attr('cellspacing', '0')
+			.append($('<thead>')
+				.append($('<tr>')
+					.append($('<th>').text('Rank'))
+					.append($('<th>').text('Player'))
+					.append($('<th>').text('Accuracy'))
+					.append($('<th>').text('Playcount'))
+					.append($('<th>').text('Performance'))
+					.append($('<th>').text('Delete'))
+				)
+			)
+	).append($('<img>').attr('id', 'playersTableLoadingIcon').attr('src', 'http://www.ajaxload.info/images/exemples/30.gif').css('height', '11px').css('width', '11px').hide());
+}
+
+//DYNAMIC ELEMENTS
+
+function appendToScoresTable(d) {
+	$('#scoresTable').append($('<tr>')
+			.append($('<td>').css('width', '20%')
+				.append($('<time>').addClass('timeago').attr('datetime', d.date).attr('title', formatDateForTitle(d.date)).text($.timeago(d.date)))
+			)
+			.append($('<td>')
+			.append($('<div>').addClass('event epic1')
+				.append($('<img>').attr('src', '/images/' + d.rank +'_small.png'))
+				.append(' ')
+				.append($('<a>').attr('href', URL_USER + d.username).attr('target', '_blank').css('font-weight', 'bold').text(d.username)) 
+				.append(' got ')
+                .append($('<span>').css('font-weight', 'bold').text(d.pp + 'pp'))
+                .append(' on ')
+				.append($('<a>').attr('href', URL_BEATMAP + d.beatmap.beatmapId).attr('target', '_blank').text(d.beatmap.artist + ' - ' + d.beatmap.title + ' [' + d.beatmap.version + '] '))
+				.append (' (' + modsToString(d.mods) + ') ')
+			)
+		)
+	);
+}
+
+function appendToPlayersTable(d) {
+	var deleteButton = $('<td>').attr('href', '#').css('text-align', 'center').click(function(event) {
+		event.preventDefault();
+		if (!isLocked()) {
+			if (confirm('Are you sure you want to stop following ' + d.username + '?')) {
+				var row = $(this).parent();
+				var index = row.index();
+				processDelete(username, d.username);
+				row.remove();
+				refreshPlayerTableRowClasses(index);
+			}
+		}
+	}).append($('<img>').attr('src','https://cdn2.iconfinder.com/data/icons/windows-8-metro-style/128/delete.png').css('width', '10px').css('height', '10px'));
+
+	var rank = d.rank ? (d.rank === '0' ? 'unranked' :'#' + d.rank) : '';
+	var country = d.country ? d.country.toLowerCase() : 'mw';
+	var acc = d.accuracy ? d.accuracy + '%' : '';
+	var pp = d.pp ? (d.pp === '0' ? 'unavailable' : d.pp + 'pp') : '';
+	var playcount = d.playcount ? commaSeparate(d.playcount) : '';
+	
+	refreshPlayerTableRowClasses(
+		appendInOrder(
+			$('<tr>')//.attr('onclick','document.location="/u/' + encodeURIComponent(d.username) + '"')
+				.append($('<td>').css('font-weight', 'bold').text(rank))
+				.append($('<td>')
+					.append($('<a>').attr('href', URL_RANK + d.country).append($('<img>').attr('src', '//s.ppy.sh/images/flags/' + country + '.gif')))
+					.append(' ')
+					.append($('<a>').attr('target', '_blank').attr('href', URL_USER + d.username).text(d.username))
+				)
+				.append($('<td>').text(acc))
+				.append($('<td>').text(playcount))
+				.append($('<td>').css('font-weight', 'bold').text(pp))
+				.append(deleteButton), rank)
+	);
+}
+
+function appendInOrder(newRow, rank) {
+	var table = $('#playersTable');
+	//table is empty
+	var rows = table.find('tbody > tr');
+	if (!rows.length) {
+		table.append(newRow);
+		return 0;
+	}
+	//invalid rank
+	var newRowRank = parseInt(rank.substring(1), 10);
+	if (!newRowRank) {
+		table.append(newRow);
+		return rows.length;
+	}	
+	var rowIndex;
+	for (rowIndex = 0; rowIndex < rows.length; rowIndex++) {
+		var currentRowRank = parseInt(rows[rowIndex].firstChild.textContent.substring(1), 10);
+		if (!currentRowRank || newRowRank < currentRowRank) {
+			break;
+		}
+	}	
+	//found index
+	if (rowIndex < rows.length) {
+		rows.eq(rowIndex).before(newRow);
+		return rowIndex;
+	}	
+	//is new last row
+	table.append(newRow);
+	return rows.length;
+}
+
+//AJAX
+
+function processDelete(username, player) {
+	closeLock();
+    var url = URL_BASE + URL_DELETE; 
+	var params = 'username=' + encodeURIComponent(username) + '&player=' + encodeURIComponent(player);
+	var loadingIcon = $('#playersTableLoadingIcon').show();
+    createPostRequest(url, params, function(response){
+        if (response.status === 200) {
+			showMessage('You have unfollowed ' + player + '.');
+			refreshScoresTable();
+        } else {
+			showMessage(response.responseText);
+		}
+		loadingIcon.hide();
+		openLock();
+    });
+}
+
+function processAdd(username, player) {
+	closeLock();
+    var url = URL_BASE + URL_ADD; 
+	var params = 'username=' + encodeURIComponent(username) + '&player=' + encodeURIComponent(player);
+	var loadingIcon = $('#playersTableLoadingIcon').show();
+    createPostRequest(url, params, function(response){
+        if (response.status === 200) {
+			var data = $.parseJSON(response.responseText);
+			appendToPlayersTable(data);
+			showMessage('You are now following ' + data.username + '.');
+			refreshScoresTable();
+        } else {
+			showMessage(response.responseText);
+		}
+		loadingIcon.hide();
+		openLock();
+    });
+}
+
+function appendBatch() {
+    closeLock();
+    var url = URL_BASE + URL_API_SCORES + '?username=' + encodeURIComponent(username) + '&startingIndex=' + encodeURIComponent(index);
+    var loadingIcon = $('#scoresLoadingIcon').show();
+    createGetRequest(url, function(response){
+		if (response.status === 200) {
+			var data = $.parseJSON(response.responseText);
+			for (var i = 0; i < data.length; i++) {
+				appendToScoresTable(data[i]);
+				index++;
+			}
+		} else {
+			showMessage(response.responseText);
+		}
+        var scoresDiv = $('#scoresDiv');
+        scoresDiv.animate({ scrollTop: scoresDiv[0].scrollHeight}, 1000);
+		loadingIcon.hide();
+        openLock();
+    });
+}
+
+function initPlayersTable() {
+	closeLock();
+	var data = [];
+	var url = URL_BASE + URL_API_PLAYERS + '?username=' + encodeURIComponent(username);
+	var loadingIcon = $('#playersTableLoadingIcon').show();
+	createGetRequest(url, function(response) {
+		if (response.status === 200) {
+			data = $.parseJSON(response.responseText);
+			for (var i = 0; i < data.length; i++) {
+				appendToPlayersTable(data[i]);
+			}
+		} else {
+			showMessage(response.responseText);
+		}
+		loadingIcon.hide();
+		openLock();
+	});
+}
+
+function refreshScoresTable() {
+	$('#scoresTable').empty();
+	index = 0;
+	appendBatch();
+}
+
+function createGetRequest(url, callback) {
+    GM_xmlhttpRequest({
+        method: 'GET',
+        url: url,
+        onload: function(response) {
+			callback(response);
+        }
+    });
+}
+
+function createPostRequest(url, params, callback) {
+    GM_xmlhttpRequest({
+		method: 'POST',
+		url: url,
+		data: params,
+		headers: {
+			'Content-Type': 'application/x-www-form-urlencoded'
+		},
+		onload: function(response) {
+			callback(response);
+		}
+	});
+}
+
+//UTILITIES
+
+function showMessage(message) {
+	$('#messageSpan').remove();
+	$('#playersDiv').append($('<span>').attr('id', 'messageSpan').css('padding-left', '10px').css('color', '#848484').text(message).fadeIn(400).delay(4000).fadeOut(400));
+}
+
+function refreshPlayerTableRowClasses(index) {
+	var rows = $('#playersTable > tbody  > tr');
+	for (var i = index; i < rows.length; i++) {
+		rows[i].className = i % 2 === 1 ? 'row2p' : 'row1p';
+	}
+}
+
+function getCookie(k){
+	return (document.cookie.match('(^|; )' + k + '=([^;]*)') || 0)[2];
+}
+
+function modsToString(mods) {
+    var str = '';
+    for (var i = 0; i < mods.length; i++) {
+        str += mods[i] + ', ';
+    }
+    return str.substring(0, str.length - 2);
+}
+
+function waitForSelector(selector, callback, timeout){
+    var waited = 0;
+    var interval = setInterval(function() {
+        var elem = $(selector);
+        if (elem.length) {
+            clearInterval(interval);
+            callback(elem);
+        } else {
+            waited += pollingRate;
+            if (waited >= timeout) {
+                clearInterval();
+            }
+        }
+    }, pollingRate);
+}
+
+function formatDateForTitle(str) {
+    var d = new Date(str);
+    // convert to UTC
+    d = new Date(d.getTime() + (d.getTimezoneOffset() * 60000));
+    
+    var yyyy = d.getFullYear();
+    var mm = d.getMonth() + 1;
+    var dd = d.getDate();
+    var hh = d.getHours();
+    var mi = d.getMinutes();
+    var ss = d.getSeconds();
+
+    return yyyy + '-' + pad(mm) + '-' + pad(dd) + ' ' + pad(hh) + ':' + pad(mi) + ':' + pad(ss) + ' UTC';
+}
+
+function pad(i) {
+    return ('0' + i).slice(-2);
+}
+
+function commaSeparate(val){
+    while (/(\d+)(\d{3})/.test(val.toString())){
+        val = val.toString().replace(/(\d+)(\d{3})/, '$1'+','+'$2');
+    }
+    return val;
+}
+
+function validateUser() {
+    var profileName = $('.profile-username').first().text().trim();
+    if (profileName) {
+        //first try with cookie
+        username = getCookie('last_login');
+        if (username) {
+            username = username.replace(/\+/g,' ');
+            if (username === profileName) {
+                return true;
+            }
+        }
+        //then try with content infoline name
+        username = $('.content-infoline').last().find('a').first().text();
+        if (username === profileName) {
+            return true;
+        }
+    }
+    //if both fail then return false
+    return false;
+}
+
+//SYNC LOCK
+
+function isLocked() {
+	return lock;
+}
+
+function closeLock() {
+	lock--;
+}
+
+function openLock() {
+	lock++;
+}
