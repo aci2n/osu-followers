@@ -253,7 +253,7 @@ function appendBatch() {
 			showMessage(response.responseText);
 		}
         var scoresDiv = $('#scoresDiv');
-        scoresDiv.animate({ scrollTop: scoresDiv[0].scrollHeight}, 1000);
+        scoresDiv.stop().animate({ scrollTop: scoresDiv[0].scrollHeight}, 1000);
 		loadingIcon.hide();
         openLock();
     });
