@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name osu! followers
-// @version 0.35
+// @version 0.36
 // @author Alvaro Daniel Calace
 // @namespace https://github.com/alvarocalace/osufollowers
 // @description Adds a new followed players section in your osu! profile
@@ -126,8 +126,9 @@ function appendToScoresTable(d) {
 				.append(' got ')
                 .append($('<span>').css('font-weight', 'bold').text(d.pp + 'pp'))
                 .append(' on ')
-				.append($('<a>').attr('href', URL_BEATMAP + d.beatmap.beatmapId).attr('target', '_blank').text(d.beatmap.artist + ' - ' + d.beatmap.title + ' [' + d.beatmap.version + '] '))
-				.append (' (' + modsToString(d.mods) + ') ')
+				.append($('<a>').attr('href', URL_BEATMAP + d.beatmap.beatmapId).attr('target', '_blank').text(d.beatmap.artist + ' - ' + d.beatmap.title + ' [' + d.beatmap.version + ']'))
+				//.append(' (' + d.beatmap.mode + ')')
+				.append(' (' + d.accuracy + ' - ' + modsToString(d.mods) + ')')
 			)
 		)
 	);
@@ -149,7 +150,7 @@ function appendToPlayersTable(d) {
 
 	var rank = d.rank ? (d.rank === '0' ? 'unranked' :'#' + d.rank) : '';
 	var country = d.country ? d.country.toLowerCase() : 'mw';
-	var acc = d.accuracy ? d.accuracy + '%' : '';
+	var acc = d.accuracy ? d.accuracy : '';
 	var pp = d.pp ? (d.pp === '0' ? 'unavailable' : d.pp + 'pp') : '';
 	var playcount = d.playcount ? commaSeparate(d.playcount) : '';
 	
