@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name osu! followers
-// @version 0.37
+// @version 0.38
 // @author Alvaro Daniel Calace
 // @namespace https://github.com/alvarocalace/osufollowers
 // @description Adds a new followed players section in your osu! profile
@@ -13,8 +13,8 @@
 // ==/UserScript==
 
 var u,URL_USER="https://osu.ppy.sh/u/",URL_BEATMAP="https://osu.ppy.sh/b/",URL_RANK="https://osu.ppy.sh/p/pp?c=",URL_BASE="http://itoon-osufollower.rhcloud.com",URL_API_SCORES="/api/FollowedPlayersRecentTopScores",URL_API_PLAYERS="/api/GetFollowedPlayers",URL_ADD="/AddFollowedPlayer",URL_DELETE="/DeleteFollowedPlayer",index=0,lock=0,pollingRate=10,defaultTimeout=7500;(function(){v()&&waitForSelector(".profileStatHeader:eq(1)",init,defaultTimeout)})();
-function init(a){var b=$("<div>").attr("id","osuFollowersMainDiv");a.before(b);b.append(prepareTitleDiv());b.append(prepareScoresDiv());b.append(prepareShowMeMoreDiv());b.append("<br>");b.append(preparePlayersDiv());b.append(preparePlayersTableDiv());appendBatch();initPlayersTable()}function prepareTitleDiv(){return $("<div>").attr("id","osuFollowersTitleDiv").addClass("profileStatHeader").text("Followed Players")}
-function prepareScoresDiv(){return $("<div>").attr("id","scoresDiv").css("overflow-y","auto").css("max-height","160px").append($("<table>").attr("id","scoresTable"))}
+function init(a){var b=$("<div>").attr("id","osuFollowersMainDiv");a.before(b);b.append(prepareTitleDiv());b.append(prepareScoresDiv());b.append(prepareShowMeMoreDiv());b.append("<br>");b.append(preparePlayersDiv());b.append(preparePlayersTableDiv());appendBatch();initPlayersTable()}
+function prepareTitleDiv(){return $("<div>").attr("id","osuFollowersTitleDiv").addClass("profileStatHeader").append($("<a>").attr("href","https://itoon-osufollower.rhcloud.com/").attr("target","_blank").text("Followed Players"))}function prepareScoresDiv(){return $("<div>").attr("id","scoresDiv").css("overflow-y","auto").css("max-height","160px").append($("<table>").attr("id","scoresTable"))}
 function prepareShowMeMoreDiv(){return $("<div>").attr("id","showMeMoreDiv").append($("<a>").attr("href","#").text("Show me more...").click(function(a){a.preventDefault();isLocked()||appendBatch()})).append($("<img>").attr("id","scoresLoadingIcon").attr("src","http://www.ajaxload.info/images/exemples/30.gif").css("height","11px").css("width","11px").hide())}function preparePlayersDiv(){return $("<div>").attr("id","playersDiv").append(prepareExpandPlayersButton()).append(preparePlayersInput())}
 function prepareExpandPlayersButton(){return $("<a>").attr("id","expandPlayersButton").attr("href","#").click(function(a){a.preventDefault();a=$(this).children(":first");"none"===a.css("-webkit-transform")?a.css("-webkit-transform","rotate(-90deg)"):a.css("-webkit-transform","");a=$("#playersTableDiv");"none"===a.css("display")?a.show():a.hide()}).append($("<img>").attr("src","https://upload.wikimedia.org/wikipedia/commons/f/f7/Arrow-down-navmenu.png").css("padding-right","3px").css("height","11px").css("width",
 "11px"))}function preparePlayersInput(){return $("<input>").attr("id","playersInput").attr("placeholder","follow a new player!").on("keydown",function(a){if(!isLocked()){var b=$(this).val();13===a.which&&b&&($(this).val(""),processAdd(b))}})}
