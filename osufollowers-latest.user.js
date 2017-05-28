@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name osu! followers
-// @version 0.52
+// @version 0.53
 // @author Alvaro Daniel Calace
 // @namespace https://github.com/alvarocalace/osufollowers
 // @description Adds a new followed players section in your osu! profile
