@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name osu! followers
-// @version 0.53
+// @version 0.54
 // @author Alvaro Daniel Calace
 // @namespace https://github.com/alvarocalace/osufollowers
 // @description Adds a new followed players section in your osu! profile
@@ -42,11 +42,16 @@ var u, URL_USER = "https://osu.ppy.sh/u/",
 })();
 
 function init(a) {
-    initStyle();
-    a.before($("<div>").append(prepareTitleDiv()).append(prepareScoresDiv()).append(prepareShowMeMoreDiv()).append(preparePlayersDiv()).append(preparePlayersTableDiv()).append(prepareAudioElement()));
-    validateVersion();
-    appendBatch();
-    initPlayersTable()
+    a.before($("<div>").append(prepareGoodbyeDiv()));
+}
+
+function prepareGoodbyeDiv() {
+	return $("<div style='border-top: 1px solid black; margin-top: 10px; padding: 10px;'>").text(
+		"[osu!followers] " +
+		"The server host doesn't exist anymore, and there's no much reason to go through the hassle of re-deploying everything. " +
+		"Feel free to uninstall this extension, since it won't do much more than show this message from now on. " +
+		"Thanks for using osu!followers during the last two years! " +
+		"(perdon lucas me dio paja)");
 }
 
 function prepareTitleDiv() {
